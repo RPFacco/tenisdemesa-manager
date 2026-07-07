@@ -232,6 +232,30 @@ server.port=${PORT:8080}
 
 > Aiven exige SSL nas conexões MySQL do tier gratuito — por isso `sslMode=REQUIRED` é obrigatório, não opcional.
 
+### 10.1 Endpoint de health-check (para manter o app acordado no Render free tier)
+
+O free tier do Render coloca o serviço pra dormir após ~15 min sem requisições, e o primeiro request seguinte demora cerca de 1 minuto pra acordar o container. A mitigação é um serviço externo de ping/cron fazendo requisições periódicas (a cada 5–10 min) a um endpoint leve, que não toque no banco.
+
+Adicionar ao `pom.xml`:
+
+```xml
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+E ao `application.properties`:
+
+```properties
+management.endpoints.web.exposure.include=health
+management.endpoint.health.show-details=never
+```
+
+Isso expõe `GET /actuator/health`, retornando `{"status":"UP"}` sem consultar o banco por padrão — ideal como alvo do ping externo.
+
+**Nota (fora do escopo do código, passo manual pós-deploy):** a configuração do serviço de ping (ex: cron-job.org, gratuito, sem restrição de uso comercial, intervalos de até 1 min) é feita depois do deploy, apontando para `https://seu-app.onrender.com/actuator/health`, e depende de uma conta criada por você — não pode ser automatizada via este `.md` nem faz parte do oneshot de código.
+
 `Dockerfile` (multi-stage):
 
 ```dockerfile

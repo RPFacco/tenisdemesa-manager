@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head><title>Campeonatos - Painel de Tênis de Mesa</title></head>
+<body>
+<section layout:fragment="content">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+        <h2><i class="bi bi-trophy"></i> Campeonatos</h2>
+        <a href="/campeonatos/novo" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Novo Campeonato</a>
+    </div>
+    <div th:if="${#lists.isEmpty(campeonatos)}" class="alert alert-info">
+        Nenhum campeonato cadastrado ainda.
+    </div>
+    <div th:unless="${#lists.isEmpty(campeonatos)}" class="table-responsive">
+        <table class="table table-hover">
+            <thead class="table-light">
+                <tr>
+                    <th>Nome</th>
+                    <th>Local</th>
+                    <th>Período</th>
+                    <th>Medalhas</th>
+                    <th>Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="c : ${campeonatos}">
+                    <td><a th:href="@{/campeonatos/{id}(id=${c.id})}" th:text="${c.nome}"></a></td>
+                    <td th:text="${c.local}"></td>
+                    <td th:text="${#temporals.format(c.dataInicio, 'dd/MM/yyyy')} + ' a ' + ${#temporals.format(c.dataFim, 'dd/MM/yyyy')}"></td>
+                    <td>
+                        <span th:each="m : ${c.medalhas}" class="me-1">
+                            <i th:if="${m.tipo.name() == 'OURO'}" class="bi bi-star-fill text-warning"></i>
+                            <i th:if="${m.tipo.name() == 'PRATA'}" class="bi bi-star-fill text-secondary"></i>
+                            <i th:if="${m.tipo.name() == 'BRONZE'}" class="bi bi-star-fill" style="color: #cd7f32"></i>
+                        </span>
+                        <span th:if="${#lists.isEmpty(c.medalhas)}" class="text-muted">—</span>
+                    </td>
+                    <td>
+                        <a th:href="@{/campeonatos/{id}(id=${c.id})}" class="btn btn-sm btn-outline-primary"><i class="bi bi-eye"></i></a>
+                        <a th:href="@{/campeonatos/{id}/editar(id=${c.id})}" class="btn btn-sm btn-outline-secondary"><i class="bi bi-pencil"></i></a>
+                        <form th:action="@{/campeonatos/{id}/excluir(id=${c.id})}" method="post" style="display:inline"
+                              onsubmit="return confirm('Excluir este campeonato? Todas as partidas e medalhas serão removidas.');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</section>
+</body>
+</html>

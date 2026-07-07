@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head><title>Partida - Painel de Tênis de Mesa</title></head>
+<body>
+<section layout:fragment="content">
+    <div class="row mt-4">
+        <div class="col-md-8 offset-md-2">
+            <h2 class="mb-4"><i class="bi bi-list-check"></i>
+                <span th:if="${partida.id != null}">Editar Partida</span>
+                <span th:unless="${partida.id != null}">Nova Partida</span>
+            </h2>
+            <form th:action="${partida.id != null} ? @{/campeonatos/{cid}/partidas/{pid}(cid=${partida.campeonato.id}, pid=${partida.id})} : @{/campeonatos/{cid}/partidas(cid=${partida.campeonato.id})}"
+                  th:object="${partida}" method="post" class="card card-body">
+                <div class="mb-3">
+                    <label class="form-label">Adversário *</label>
+                    <input type="text" th:field="*{adversario}" class="form-control" required>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Data *</label>
+                        <input type="date" th:field="*{data}" class="form-control" required>
+                    </div>
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Fase</label>
+                        <select th:field="*{fase}" class="form-select">
+                            <option value="">— Selecione —</option>
+                            <option th:each="f : ${fases}" th:value="${f.name()}" th:text="${f.name().replace('_', ' ')}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Link do YouTube (opcional)</label>
+                    <input type="url" th:field="*{linkYoutube}" class="form-control" placeholder="https://youtube.com/...">
+                </div>
+
+                <h5 class="mt-3">Sets</h5>
+                <div id="sets-container">
+                    <div class="row mb-2 set-row" th:each="set, iter : *{sets}">
+                        <div class="col-md-4">
+                            <label class="form-label">Pontos Atleta</label>
+                            <input type="number" th:field="*{sets[__${iter.index}__].pontosAtleta}" class="form-control" min="0" required>
+                        </div>
+                        <div class="col-md-4">
+                            <label class="form-label">Pontos Adversário</label>
+                            <input type="number" th:field="*{sets[__${iter.index}__].pontosAdversario}" class="form-control" min="0" required>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-end mb-3">
+                            <button type="button" class="btn btn-outline-danger btn-sm remover-set" th:unless="${iter.first}"><i class="bi bi-dash-circle"></i> Remover</button>
+                        </div>
+                    </div>
+                </div>
+                <button type="button" id="adicionar-set" class="btn btn-outline-primary btn-sm mb-3"><i class="bi bi-plus-circle"></i> Adicionar Set</button>
+
+                <div class="d-flex justify-content-between">
+                    <a th:href="@{/campeonatos/{id}(id=${partida.campeonato.id})}" class="btn btn-outline-secondary">Cancelar</a>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var container = document.getElementById('sets-container');
+            var addBtn = document.getElementById('adicionar-set');
+            var setIndex = container.children.length;
+
+            addBtn.addEventListener('click', function () {
+                var row = document.createElement('div');
+                row.className = 'row mb-2 set-row';
+                row.innerHTML = `
+                    <div class="col-md-4">
+                        <label class="form-label">Pontos Atleta</label>
+                        <input type="number" name="sets[` + setIndex + `].pontosAtleta" class="form-control" min="0" required>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Pontos Adversário</label>
+                        <input type="number" name="sets[` + setIndex + `].pontosAdversario" class="form-control" min="0" required>
+                    </div>
+                    <div class="col-md-4 d-flex align-items-end mb-3">
+                        <button type="button" class="btn btn-outline-danger btn-sm remover-set"><i class="bi bi-dash-circle"></i> Remover</button>
+                    </div>
+                `;
+                container.appendChild(row);
+                setIndex++;
+            });
+
+            container.addEventListener('click', function (e) {
+                if (e.target.classList.contains('remover-set') || e.target.closest('.remover-set')) {
+                    var btn = e.target.classList.contains('remover-set') ? e.target : e.target.closest('.remover-set');
+                    var row = btn.closest('.set-row');
+                    if (container.querySelectorAll('.set-row').length > 1) {
+                        row.remove();
+                    } else {
+                        alert('É necessário pelo menos 1 set.');
+                    }
+                }
+            });
+        });
+    </script>
+</section>
+</body>
+</html>
