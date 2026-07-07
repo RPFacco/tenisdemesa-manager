@@ -36,8 +36,11 @@ public class TreinoController {
     }
 
     @PostMapping
-    public String salvar(Treino treino, RedirectAttributes redirect) {
-        service.salvar(treino);
+    public String salvar(Treino treino,
+                         @RequestParam(defaultValue = "0") Integer horas,
+                         @RequestParam(defaultValue = "0") Integer minutos,
+                         RedirectAttributes redirect) {
+        treino.setDuracaoHoras(horas + minutos / 60.0);
         redirect.addFlashAttribute("mensagem", "Treino salvo com sucesso!");
         return "redirect:/treinos";
     }

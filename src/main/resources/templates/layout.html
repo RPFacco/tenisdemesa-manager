@@ -133,16 +133,25 @@
             text-decoration: none;
             font-size: 0.7rem;
             padding: 6px 0;
-            transition: color 0.2s;
+            transition: color 0.2s, background-color 0.15s;
             min-height: 44px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .bottom-nav a:active {
+            background-color: rgba(24, 188, 156, 0.1);
+            color: #18bc9c;
         }
         .bottom-nav a i {
             font-size: 1.3rem;
             margin-bottom: 2px;
+            transition: transform 0.15s;
+        }
+        .bottom-nav a:active i {
+            transform: scale(1.2);
         }
         .bottom-nav a.active {
             color: #18bc9c;
@@ -172,6 +181,10 @@
         .fab:hover {
             transform: scale(1.1);
             color: #fff;
+        }
+        .fab:active {
+            transform: scale(0.92);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
         }
         .fab i {
             line-height: 1;

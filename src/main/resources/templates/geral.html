@@ -174,7 +174,7 @@
                                 <span class="badge bg-light text-dark me-2" th:text="${#temporals.format(t.data, 'dd/MM')}">11/06</span>
                                 <span th:text="${t.tipo.name()}">Técnica</span>
                             </div>
-                            <span class="text-muted small" th:text="${#numbers.formatDecimal(t.duracaoHoras * 60, 0, 0) + 'min'}">45min</span>
+                            <span class="text-muted small" th:text="${@treinoHelper.formatDuracao(t.duracaoHoras)}">45min</span>
                         </li>
                     </ul>
                 </div>
