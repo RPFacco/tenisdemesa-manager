@@ -7,6 +7,7 @@ import com.ana.tenisdemesa.model.enums.ResultadoPartida;
 import com.ana.tenisdemesa.model.enums.TipoMedalha;
 import com.ana.tenisdemesa.repository.CampeonatoRepository;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -24,20 +25,32 @@ public class EstatisticaService {
     }
 
     public long totalVitorias() {
-        return todasPartidas().stream()
+        return totalVitorias(null, null);
+    }
+
+    public long totalVitorias(LocalDate inicio, LocalDate fim) {
+        return partidasNoPeriodo(inicio, fim).stream()
                 .filter(p -> p.getResultado() == ResultadoPartida.VITORIA)
                 .count();
     }
 
     public long totalDerrotas() {
-        return todasPartidas().stream()
+        return totalDerrotas(null, null);
+    }
+
+    public long totalDerrotas(LocalDate inicio, LocalDate fim) {
+        return partidasNoPeriodo(inicio, fim).stream()
                 .filter(p -> p.getResultado() == ResultadoPartida.DERROTA)
                 .count();
     }
 
     public String taxaVitoria() {
-        long vitorias = totalVitorias();
-        long derrotas = totalDerrotas();
+        return taxaVitoria(null, null);
+    }
+
+    public String taxaVitoria(LocalDate inicio, LocalDate fim) {
+        long vitorias = totalVitorias(inicio, fim);
+        long derrotas = totalDerrotas(inicio, fim);
         long total = vitorias + derrotas;
         if (total == 0) return "—";
         long percentual = Math.round((double) vitorias / total * 100);
@@ -54,7 +67,11 @@ public class EstatisticaService {
     }
 
     public String sequenciaAtual() {
-        List<Partida> todas = todasPartidas();
+        return sequenciaAtual(null, null);
+    }
+
+    public String sequenciaAtual(LocalDate inicio, LocalDate fim) {
+        List<Partida> todas = partidasNoPeriodo(inicio, fim);
         if (todas.isEmpty()) return "—";
 
         List<Partida> ordenadas = todas.stream()
@@ -74,6 +91,16 @@ public class EstatisticaService {
         }
         String label = primeiro == ResultadoPartida.VITORIA ? "V" : "D";
         return count + label;
+    }
+
+    private List<Partida> partidasNoPeriodo(LocalDate inicio, LocalDate fim) {
+        return todasPartidas().stream()
+                .filter(p -> {
+                    if (inicio != null && p.getData().isBefore(inicio)) return false;
+                    if (fim != null && p.getData().isAfter(fim)) return false;
+                    return true;
+                })
+                .collect(Collectors.toList());
     }
 
     private List<Partida> todasPartidas() {

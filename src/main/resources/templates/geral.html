@@ -4,71 +4,184 @@
 <head><title>Geral - Painel de Tênis de Mesa</title></head>
 <body>
 <section layout:fragment="content">
-    <div class="row mt-4">
-        <div class="col-12">
-            <h2 class="mb-4"><i class="bi bi-bar-chart"></i> Estatísticas Gerais</h2>
+
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-4">
+        <h2 class="mb-0"><i class="bi bi-bar-chart"></i> Estatísticas Gerais</h2>
+        <div class="btn-group" role="group">
+            <a th:href="@{/geral(periodo='ano')}"
+               class="btn btn-sm"
+               th:classappend="${periodo == 'ano' or periodo == null} ? 'btn-primary' : 'btn-outline-primary'">Ano</a>
+            <a th:href="@{/geral(periodo='30d')}"
+               class="btn btn-sm"
+               th:classappend="${periodo == '30d'} ? 'btn-primary' : 'btn-outline-primary'">30 dias</a>
+            <a th:href="@{/geral(periodo='todos')}"
+               class="btn btn-sm"
+               th:classappend="${periodo == 'todos'} ? 'btn-primary' : 'btn-outline-primary'">Todos</a>
         </div>
     </div>
+
     <div class="row">
         <div class="col-md-3 mb-3">
-            <div class="card card-gradient-success text-center">
+            <div class="card card-elevated border-success border-2 text-center h-100">
                 <div class="card-body py-4">
-                    <h5 class="card-title"><i class="bi bi-trophy"></i> Vitórias</h5>
-                    <p class="stat-value mb-0" th:text="${totalVitorias}">0</p>
+                    <h5 class="card-title text-success"><i class="bi bi-trophy"></i> Vitórias</h5>
+                    <p class="stat-value mb-0 text-success" th:text="${totalVitorias}">0</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card card-gradient-danger text-center">
+            <div class="card card-elevated border-danger border-2 text-center h-100">
                 <div class="card-body py-4">
-                    <h5 class="card-title"><i class="bi bi-x-circle"></i> Derrotas</h5>
-                    <p class="stat-value mb-0" th:text="${totalDerrotas}">0</p>
+                    <h5 class="card-title text-danger"><i class="bi bi-x-circle"></i> Derrotas</h5>
+                    <p class="stat-value mb-0 text-danger" th:text="${totalDerrotas}">0</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card card-gradient-info text-center">
+            <div class="card card-elevated border-primary border-2 text-center h-100">
                 <div class="card-body py-4">
-                    <h5 class="card-title"><i class="bi bi-pie-chart"></i> Taxa de Vitória</h5>
-                    <p class="stat-value mb-0" th:text="${taxaVitoria}">—</p>
+                    <h5 class="card-title text-primary"><i class="bi bi-pie-chart"></i> Taxa de Vitória</h5>
+                    <p class="stat-value mb-0 text-primary" th:text="${taxaVitoria}">—</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card card-gradient-warning text-center">
+            <div class="card card-elevated border-warning border-2 text-center h-100">
                 <div class="card-body py-4">
-                    <h5 class="card-title"><i class="bi bi-fire"></i> Sequência</h5>
-                    <p class="stat-value mb-0" th:text="${sequenciaAtual}">—</p>
+                    <h5 class="card-title text-warning"><i class="bi bi-fire"></i> Sequência</h5>
+                    <p class="stat-value mb-0 text-warning" th:text="${sequenciaAtual}">—</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row mt-2">
-        <div class="col-md-3 mb-3">
-            <div class="card card-elevated border-primary border-2 text-center">
-                <div class="card-body py-4">
-                    <h5 class="card-title text-primary"><i class="bi bi-flag"></i> Campeonatos</h5>
-                    <p class="stat-value mb-0" th:text="${totalCampeonatos}">0</p>
-                </div>
-            </div>
+    <div th:if="${campeonatoAtual != null}" class="card card-elevated border-primary mb-4">
+        <div class="card-header bg-transparent">
+            <h4 class="mb-0"><i class="bi bi-flag text-primary"></i> Campeonato Atual</h4>
         </div>
-        <div th:each="tipo : ${tiposMedalha}" class="col-md-3 mb-3">
-            <div class="card card-elevated text-center">
-                <div class="card-body py-4">
-                    <h5 class="card-title mb-0">
-                        <i class="medal-icon bi"
-                           th:classappend="${tipo.name() == 'OURO' ? 'bi-star-fill text-warning' : 
-                                                  tipo.name() == 'PRATA' ? 'bi-star-fill text-secondary' : 
-                                                  'bi-star-fill'}"
-                           th:style="${tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
-                    </h5>
-                    <p class="stat-value mb-0" th:text="${medalhasPorTipo.getOrDefault(tipo, 0L)}">0</p>
-                    <span class="text-muted small" th:text="${tipo.name()}"></span>
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <h5 class="mb-1" th:text="${campeonatoAtual.nome}">Nome</h5>
+                    <p class="text-muted mb-1">
+                        <i class="bi bi-geo-alt"></i> <span th:text="${campeonatoAtual.local}">Local</span>
+                        <span th:if="${campeonatoAtual.categoria}"> &middot; <span th:text="${campeonatoAtual.categoria}">Categoria</span></span>
+                    </p>
+                    <p class="text-muted mb-2">
+                        <i class="bi bi-calendar"></i>
+                        <span th:text="${#temporals.format(campeonatoAtual.dataInicio, 'dd/MM/yyyy')}"></span>
+                        a
+                        <span th:text="${#temporals.format(campeonatoAtual.dataFim, 'dd/MM/yyyy')}"></span>
+                    </p>
+                    <div th:if="${progressoCampeonato.total > 0}" class="mb-2">
+                        <div class="d-flex justify-content-between small mb-1">
+                            <span th:text="${progressoCampeonato.realizadas + ' de ' + progressoCampeonato.total + ' partidas'}"></span>
+                            <span th:text="${#numbers.formatDecimal((progressoCampeonato.realizadas / progressoCampeonato.total) * 100, 0, 0) + '%'}"></span>
+                        </div>
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-primary"
+                                 th:style="${'width: ' + (progressoCampeonato.total > 0 ? (progressoCampeonato.realizadas / progressoCampeonato.total) * 100 : 0) + '%'}"></div>
+                        </div>
+                    </div>
+                    <div th:if="${progressoCampeonato.total == 0}" class="text-muted small mb-2">
+                        Nenhuma partida cadastrada
+                    </div>
+                    <div th:if="${not #lists.isEmpty(campeonatoAtual.medalhas)}" class="mt-2">
+                        <span th:each="m : ${campeonatoAtual.medalhas}" class="me-2">
+                            <i class="medal-icon bi bi-star-fill"
+                               th:classappend="${m.tipo.name() == 'OURO' ? 'text-warning' : m.tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
+                               th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
+                            <span class="small" th:text="${m.tipo.name()}"></span>
+                        </span>
+                    </div>
+                </div>
+                <div class="col-md-4 text-md-end mt-3 mt-md-0">
+                    <a th:href="@{/campeonatos/{id}(id=${campeonatoAtual.id})}" class="btn btn-primary">
+                        Ver detalhes <i class="bi bi-arrow-right"></i>
+                    </a>
                 </div>
             </div>
         </div>
     </div>
+
+    <div th:if="${campeonatoAtual == null}" class="card card-elevated mb-4">
+        <div class="card-body text-center py-4">
+            <i class="bi bi-flag display-4 d-block mb-2 text-muted"></i>
+            <p class="mb-1">Nenhum campeonato registrado</p>
+            <a th:href="@{/campeonatos/novo}" class="btn btn-primary btn-sm">Criar campeonato</a>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-12">
+            <h5 class="mb-3"><i class="bi bi-stars"></i> Medalhas</h5>
+        </div>
+        <div th:each="tipo : ${tiposMedalha}" class="col-md-4 mb-2">
+            <div class="card card-elevated text-center">
+                <div class="card-body py-3">
+                    <i class="medal-icon bi bi-star-fill"
+                       th:classappend="${tipo.name() == 'OURO' ? 'text-warning' : tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
+                       th:style="${tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
+                    <span class="h5 ms-1 fw-bold" th:text="${medalhasPorTipo.getOrDefault(tipo, 0L)}">0</span>
+                    <span class="text-muted small ms-1" th:text="${tipo.name()}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card card-elevated h-100">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0"><i class="bi bi-list-check"></i> Últimas Partidas</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div th:if="${#lists.isEmpty(ultimasPartidas)}" class="text-center py-4">
+                        <i class="bi bi-list-check display-6 d-block mb-2 text-muted"></i>
+                        <p class="mb-1 text-muted">Nenhuma partida registrada</p>
+                        <a th:href="@{/campeonatos}" class="btn btn-outline-primary btn-sm">Ver campeonatos</a>
+                    </div>
+                    <ul th:unless="${#lists.isEmpty(ultimasPartidas)}" class="list-group list-group-flush">
+                        <li th:each="p : ${ultimasPartidas}" class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <div>
+                                <span class="badge bg-light text-dark me-2" th:text="${#temporals.format(p.data, 'dd/MM')}">12/06</span>
+                                <span class="fw-semibold" th:text="${p.adversario}">Adversário</span>
+                                <span class="badge bg-light text-dark ms-1" th:text="${p.placar}">3-1</span>
+                                <span class="text-muted small ms-2" th:text="'(' + ${p.campeonato.nome} + ')'"></span>
+                            </div>
+                            <span th:if="${p.resultado != null and p.resultado.name() == 'VITORIA'}" class="badge bg-success">VITÓRIA</span>
+                            <span th:if="${p.resultado != null and p.resultado.name() == 'DERROTA'}" class="badge bg-danger">DERROTA</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-elevated h-100">
+                <div class="card-header bg-transparent">
+                    <h5 class="mb-0"><i class="bi bi-clock"></i> Últimos Treinos</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div th:if="${#lists.isEmpty(ultimosTreinos)}" class="text-center py-4">
+                        <i class="bi bi-clock display-6 d-block mb-2 text-muted"></i>
+                        <p class="mb-1 text-muted">Nenhum treino registrado</p>
+                        <a th:href="@{/treinos/novo}" class="btn btn-outline-primary btn-sm">Novo treino</a>
+                    </div>
+                    <ul th:unless="${#lists.isEmpty(ultimosTreinos)}" class="list-group list-group-flush">
+                        <li th:each="t : ${ultimosTreinos}" class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <div>
+                                <span class="badge bg-light text-dark me-2" th:text="${#temporals.format(t.data, 'dd/MM')}">11/06</span>
+                                <span th:text="${t.tipo.name()}">Técnica</span>
+                            </div>
+                            <span class="text-muted small" th:text="${#numbers.formatDecimal(t.duracaoHoras * 60, 0, 0) + 'min'}">45min</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </section>
 </body>
 </html>

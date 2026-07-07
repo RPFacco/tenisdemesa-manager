@@ -47,6 +47,15 @@ public class Partida {
         return null;
     }
 
+    @Transient
+    public String getPlacar() {
+        long setsVencidos = sets.stream()
+                .filter(s -> s.getPontosAtleta() > s.getPontosAdversario())
+                .count();
+        long setsPerdidos = sets.size() - setsVencidos;
+        return setsVencidos + "-" + setsPerdidos;
+    }
+
     public Partida() {}
 
     public Long getId() { return id; }
