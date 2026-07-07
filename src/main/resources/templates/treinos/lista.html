@@ -6,11 +6,11 @@
 <section layout:fragment="content">
     <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
         <h2><i class="bi bi-clock"></i> Treinos</h2>
-        <a href="/treinos/novo" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Novo Treino</a>
+        <a href="/treinos/novo" class="btn btn-primary d-none d-md-inline-block"><i class="bi bi-plus-circle"></i> Novo Treino</a>
     </div>
 
     <div class="row mb-4">
-        <div class="col-md-4 mb-3">
+        <div class="col-12 col-md-4 mb-3">
             <div class="card card-gradient-success text-center h-100">
                 <div class="card-body py-4">
                     <h5 class="card-title"><i class="bi bi-calendar-day"></i> Hoje</h5>
@@ -24,7 +24,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-3">
+        <div class="col-12 col-md-4 mb-3">
             <div class="card card-gradient-info text-center h-100">
                 <div class="card-body py-4">
                     <h5 class="card-title"><i class="bi bi-calendar-week"></i> Esta Semana</h5>
@@ -38,7 +38,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-3">
+        <div class="col-12 col-md-4 mb-3">
             <div class="card card-gradient-warning text-center h-100">
                 <div class="card-body py-4">
                     <h5 class="card-title"><i class="bi bi-calendar-month"></i> Este Mês</h5>
@@ -60,7 +60,7 @@
         Nenhum treino registrado.
     </div>
     <div th:unless="${#lists.isEmpty(treinos)}" class="row">
-        <div th:each="t : ${treinos}" class="col-md-4 col-lg-3 mb-3">
+        <div th:each="t : ${treinos}" class="col-12 col-md-4 col-lg-3 mb-3">
             <div class="card card-elevated h-100">
                 <div class="card-body d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-start mb-2">
@@ -88,6 +88,10 @@
             </div>
         </div>
     </div>
+
+    <a href="/treinos/novo" class="fab d-md-none">
+        <i class="bi bi-plus-lg"></i>
+    </a>
 </section>
 </body>
 </html>

@@ -59,7 +59,7 @@
                 <i class="bi bi-list-check display-4 d-block mb-2"></i>
                 Nenhuma partida registrada.
             </div>
-            <div th:unless="${#lists.isEmpty(campeonato.partidas)}" class="table-responsive">
+            <div th:unless="${#lists.isEmpty(campeonato.partidas)}" class="table-responsive d-none d-md-block">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
@@ -102,6 +102,36 @@
                     </tbody>
                 </table>
             </div>
+            <div th:unless="${#lists.isEmpty(campeonato.partidas)}" class="d-md-none">
+                <div th:each="p : ${campeonato.partidas}" class="border-bottom p-3">
+                    <div class="d-flex justify-content-between align-items-start mb-1">
+                        <div>
+                            <span class="fw-semibold" th:text="${p.adversario}"></span>
+                            <span class="text-muted small ms-2" th:text="${#temporals.format(p.data, 'dd/MM/yyyy')}"></span>
+                        </div>
+                        <span th:if="${p.resultado != null and p.resultado.name() == 'VITORIA'}" class="badge bg-success">VITÓRIA</span>
+                        <span th:if="${p.resultado != null and p.resultado.name() == 'DERROTA'}" class="badge bg-danger">DERROTA</span>
+                    </div>
+                    <div class="small text-muted mb-1">
+                        <span th:text="${p.fase != null ? p.fase.name().replace('_', ' ') : '—'}"></span>
+                        <span th:if="${not #lists.isEmpty(p.sets)}" class="ms-2">
+                            Sets:
+                            <span th:each="set, iter : ${p.sets}">
+                                <span class="badge bg-light text-dark" th:text="${set.pontosAtleta + '-' + set.pontosAdversario}"></span>
+                                <span th:unless="${iter.last}"> </span>
+                            </span>
+                        </span>
+                    </div>
+                    <div class="d-flex gap-2 mt-2">
+                        <a th:if="${p.linkYoutube != null and !p.linkYoutube.isEmpty()}" th:href="${p.linkYoutube}" target="_blank" class="btn btn-sm btn-outline-danger" style="min-height:44px;display:flex;align-items:center;"><i class="bi bi-youtube"></i></a>
+                        <a th:href="@{/campeonatos/{cid}/partidas/{pid}/editar(cid=${campeonato.id}, pid=${p.id})}" class="btn btn-sm btn-outline-secondary" style="min-height:44px;display:flex;align-items:center;"><i class="bi bi-pencil"></i></a>
+                        <form th:action="@{/campeonatos/{cid}/partidas/{pid}/excluir(cid=${campeonato.id}, pid=${p.id})}" method="post" style="display:inline"
+                              onsubmit="return confirm('Excluir esta partida?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger" style="min-height:44px;display:flex;align-items:center;"><i class="bi bi-trash"></i></button>
+                        </form>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -115,7 +145,7 @@
                 <i class="bi bi-stars display-4 d-block mb-2"></i>
                 Nenhuma medalha conquistada.
             </div>
-            <div th:unless="${#lists.isEmpty(campeonato.medalhas)}" class="table-responsive">
+            <div th:unless="${#lists.isEmpty(campeonato.medalhas)}" class="table-responsive d-none d-md-block">
                 <table class="table table-hover mb-0">
                     <thead class="table-light">
                         <tr>
@@ -144,6 +174,23 @@
                         </tr>
                     </tbody>
                 </table>
+            </div>
+            <div th:unless="${#lists.isEmpty(campeonato.medalhas)}" class="d-md-none">
+                <div th:each="m : ${campeonato.medalhas}" class="border-bottom p-3 d-flex justify-content-between align-items-center">
+                    <div>
+                        <i class="medal-icon bi"
+                           th:classappend="${m.tipo.name() == 'OURO' ? 'bi-star-fill text-warning' : 
+                                                  m.tipo.name() == 'PRATA' ? 'bi-star-fill text-secondary' : 
+                                                  'bi-star-fill'}"
+                           th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
+                        <span class="fw-semibold ms-1" th:text="${m.tipo.name()}"></span>
+                        <span class="text-muted ms-2" th:text="${m.modalidade.name().replace('_', ' ')}"></span>
+                    </div>
+                    <form th:action="@{/campeonatos/{cid}/medalhas/{mid}/excluir(cid=${campeonato.id}, mid=${m.id})}" method="post" style="display:inline"
+                          onsubmit="return confirm('Excluir esta medalha?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger" style="min-height:44px;display:flex;align-items:center;"><i class="bi bi-trash"></i></button>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
