@@ -11,34 +11,34 @@
     </div>
     <div class="row">
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-success">
-                <div class="card-body text-center">
+            <div class="card card-gradient-success text-center">
+                <div class="card-body py-4">
                     <h5 class="card-title"><i class="bi bi-trophy"></i> Vitórias</h5>
-                    <p class="card-text display-6" th:text="${totalVitorias}">0</p>
+                    <p class="stat-value mb-0" th:text="${totalVitorias}">0</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-danger">
-                <div class="card-body text-center">
+            <div class="card card-gradient-danger text-center">
+                <div class="card-body py-4">
                     <h5 class="card-title"><i class="bi bi-x-circle"></i> Derrotas</h5>
-                    <p class="card-text display-6" th:text="${totalDerrotas}">0</p>
+                    <p class="stat-value mb-0" th:text="${totalDerrotas}">0</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-info">
-                <div class="card-body text-center">
+            <div class="card card-gradient-info text-center">
+                <div class="card-body py-4">
                     <h5 class="card-title"><i class="bi bi-pie-chart"></i> Taxa de Vitória</h5>
-                    <p class="card-text display-6" th:text="${taxaVitoria}">—</p>
+                    <p class="stat-value mb-0" th:text="${taxaVitoria}">—</p>
                 </div>
             </div>
         </div>
         <div class="col-md-3 mb-3">
-            <div class="card text-white bg-warning">
-                <div class="card-body text-center">
+            <div class="card card-gradient-warning text-center">
+                <div class="card-body py-4">
                     <h5 class="card-title"><i class="bi bi-fire"></i> Sequência</h5>
-                    <p class="card-text display-6" th:text="${sequenciaAtual}">—</p>
+                    <p class="stat-value mb-0" th:text="${sequenciaAtual}">—</p>
                 </div>
             </div>
         </div>
@@ -46,24 +46,25 @@
 
     <div class="row mt-2">
         <div class="col-md-3 mb-3">
-            <div class="card border-primary">
-                <div class="card-body text-center">
+            <div class="card card-elevated border-primary border-2 text-center">
+                <div class="card-body py-4">
                     <h5 class="card-title text-primary"><i class="bi bi-flag"></i> Campeonatos</h5>
-                    <p class="card-text display-6" th:text="${totalCampeonatos}">0</p>
+                    <p class="stat-value mb-0" th:text="${totalCampeonatos}">0</p>
                 </div>
             </div>
         </div>
         <div th:each="tipo : ${tiposMedalha}" class="col-md-3 mb-3">
-            <div class="card border-secondary">
-                <div class="card-body text-center">
-                    <h5 class="card-title">
-                        <i th:class="${tipo.name() == 'OURO' ? 'bi bi-star-fill text-warning' : 
-                                       tipo.name() == 'PRATA' ? 'bi bi-star-fill text-secondary' : 
-                                       'bi bi-star-fill'}" 
+            <div class="card card-elevated text-center">
+                <div class="card-body py-4">
+                    <h5 class="card-title mb-0">
+                        <i class="medal-icon bi"
+                           th:classappend="${tipo.name() == 'OURO' ? 'bi-star-fill text-warning' : 
+                                                  tipo.name() == 'PRATA' ? 'bi-star-fill text-secondary' : 
+                                                  'bi-star-fill'}"
                            th:style="${tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
-                        <span th:text="${tipo.name()}"></span>
                     </h5>
-                    <p class="card-text display-6" th:text="${medalhasPorTipo.getOrDefault(tipo, 0L)}">0</p>
+                    <p class="stat-value mb-0" th:text="${medalhasPorTipo.getOrDefault(tipo, 0L)}">0</p>
+                    <span class="text-muted small" th:text="${tipo.name()}"></span>
                 </div>
             </div>
         </div>

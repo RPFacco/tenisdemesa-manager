@@ -7,7 +7,7 @@
     <div class="row mt-4">
         <div class="col-md-6 offset-md-3">
             <h2 class="mb-4"><i class="bi bi-stars"></i> Nova Medalha</h2>
-            <form th:action="@{/campeonatos/{cid}/medalhas(cid=${medalha.campeonato.id})}" th:object="${medalha}" method="post" class="card card-body">
+            <form th:action="@{/campeonatos/{cid}/medalhas(cid=${medalha.campeonato.id})}" th:object="${medalha}" method="post" class="card card-elevated card-body">
                 <div class="mb-3">
                     <label class="form-label">Tipo *</label>
                     <select th:field="*{tipo}" class="form-select" required>
@@ -23,8 +23,8 @@
                     </select>
                 </div>
                 <div class="d-flex justify-content-between">
-                    <a th:href="@{/campeonatos/{id}(id=${medalha.campeonato.id})}" class="btn btn-outline-secondary">Cancelar</a>
-                    <button type="submit" class="btn btn-primary">Salvar</button>
+                    <a th:href="@{/campeonatos/{id}(id=${medalha.campeonato.id})}" class="btn btn-outline-secondary btn-action">Cancelar</a>
+                    <button type="submit" class="btn btn-primary btn-action">Salvar</button>
                 </div>
             </form>
         </div>
