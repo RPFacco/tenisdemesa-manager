@@ -5,8 +5,8 @@
 <body>
 <section layout:fragment="content">
 
-    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2">
-        <h2 class="mb-0 fs-4"><i class="bi bi-bar-chart"></i> Estatísticas Gerais</h2>
+    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2 animate-on-scroll">
+        <h2 class="mb-0"><i class="bi bi-bar-chart"></i> Estatísticas Gerais</h2>
         <div class="btn-group btn-group-sm flex-wrap" role="group">
             <a th:href="@{/geral(periodo='ano')}"
                class="btn btn-sm"
@@ -20,44 +20,44 @@
         </div>
     </div>
 
-    <div class="row">
+    <div class="row stagger-children">
         <div class="col-6 col-md-3 mb-3">
-            <div class="card card-elevated border-success border-2 text-center h-100">
+            <div class="card card-gradient-success text-center h-100 card-3d">
                 <div class="card-body py-4">
-                    <h5 class="card-title text-success"><i class="bi bi-trophy"></i> Vitórias</h5>
-                    <p class="stat-value mb-0 text-success" th:text="${totalVitorias}">0</p>
+                    <h5><i class="bi bi-trophy"></i> Vitórias</h5>
+                    <p class="stat-value animate-counter mb-0" th:text="${totalVitorias}">0</p>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 mb-3">
-            <div class="card card-elevated border-danger border-2 text-center h-100">
+            <div class="card card-gradient-danger text-center h-100 card-3d">
                 <div class="card-body py-4">
-                    <h5 class="card-title text-danger"><i class="bi bi-x-circle"></i> Derrotas</h5>
-                    <p class="stat-value mb-0 text-danger" th:text="${totalDerrotas}">0</p>
+                    <h5><i class="bi bi-x-circle"></i> Derrotas</h5>
+                    <p class="stat-value animate-counter mb-0" th:text="${totalDerrotas}">0</p>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 mb-3">
-            <div class="card card-elevated border-primary border-2 text-center h-100">
+            <div class="card card-gradient-info text-center h-100 card-3d">
                 <div class="card-body py-4">
-                    <h5 class="card-title text-primary"><i class="bi bi-pie-chart"></i> Taxa de Vitória</h5>
-                    <p class="stat-value mb-0 text-primary" th:text="${taxaVitoria}">—</p>
+                    <h5><i class="bi bi-pie-chart"></i> Taxa de Vitória</h5>
+                    <p class="stat-value mb-0" th:text="${taxaVitoria}">—</p>
                 </div>
             </div>
         </div>
         <div class="col-6 col-md-3 mb-3">
-            <div class="card card-elevated border-warning border-2 text-center h-100">
+            <div class="card card-gradient-warning text-center h-100 card-3d">
                 <div class="card-body py-4">
-                    <h5 class="card-title text-warning"><i class="bi bi-fire"></i> Sequência</h5>
-                    <p class="stat-value mb-0 text-warning" th:text="${sequenciaAtual}">—</p>
+                    <h5><i class="bi bi-fire"></i> Sequência</h5>
+                    <p class="stat-value animate-counter mb-0" th:text="${sequenciaAtual}">—</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <div th:if="${campeonatoAtual != null}" class="card card-elevated border-primary mb-4">
-        <div class="card-header bg-transparent">
-            <h4 class="mb-0"><i class="bi bi-flag text-primary"></i> Campeonato Atual</h4>
+    <div th:if="${campeonatoAtual != null}" class="card card-elevated mb-4 animate-on-scroll">
+        <div class="card-header card-header-clean">
+            <h4 class="mb-0"><i class="bi bi-flag" style="color: var(--color-primary);"></i> Campeonato Atual</h4>
         </div>
         <div class="card-body">
             <div class="row align-items-center">
@@ -88,10 +88,13 @@
                     </div>
                     <div th:if="${not #lists.isEmpty(campeonatoAtual.medalhas)}" class="mt-2">
                         <span th:each="m : ${campeonatoAtual.medalhas}" class="me-2">
-                            <i class="medal-icon bi bi-star-fill"
-                               th:classappend="${m.tipo.name() == 'OURO' ? 'text-warning' : m.tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
-                               th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
-                            <span class="small" th:text="${m.tipo.name()}"></span>
+                    <i class="medal-icon bi bi-star-fill"
+                       th:classappend="${m.tipo.name() == 'OURO' ? 'text-warning' : m.tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
+                       th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
+                    <span class="small"
+                          th:classappend="${m.tipo.name() == 'OURO' ? 'text-warning' : m.tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
+                          th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"
+                          th:text="${m.tipo.name()}"></span>
                         </span>
                     </div>
                 </div>
@@ -104,7 +107,7 @@
         </div>
     </div>
 
-    <div th:if="${campeonatoAtual == null}" class="card card-elevated mb-4">
+    <div th:if="${campeonatoAtual == null}" class="card card-elevated mb-4 animate-on-scroll">
         <div class="card-body text-center py-4">
             <i class="bi bi-flag display-4 d-block mb-2 text-muted"></i>
             <p class="mb-1">Nenhum campeonato registrado</p>
@@ -114,16 +117,19 @@
 
     <div class="row mb-4">
         <div class="col-12">
-            <h5 class="mb-3"><i class="bi bi-stars"></i> Medalhas</h5>
+            <h5 class="mb-3 animate-on-scroll"><i class="bi bi-stars"></i> Medalhas</h5>
         </div>
-        <div th:each="tipo : ${tiposMedalha}" class="col-md-4 mb-2">
+        <div th:each="tipo : ${tiposMedalha}" class="col-md-4 mb-2 animate-on-scroll">
             <div class="card card-elevated text-center">
                 <div class="card-body py-3">
                     <i class="medal-icon bi bi-star-fill"
                        th:classappend="${tipo.name() == 'OURO' ? 'text-warning' : tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
                        th:style="${tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
                     <span class="h5 ms-1 fw-bold" th:text="${medalhasPorTipo.getOrDefault(tipo, 0L)}">0</span>
-                    <span class="text-muted small ms-1" th:text="${tipo.name()}"></span>
+                    <span class="small ms-1"
+                          th:classappend="${tipo.name() == 'OURO' ? 'text-warning' : tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
+                          th:style="${tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"
+                          th:text="${tipo.name()}"></span>
                 </div>
             </div>
         </div>
@@ -131,8 +137,8 @@
 
     <div class="row mb-4">
         <div class="col-md-6 mb-4 mb-md-0">
-            <div class="card card-elevated h-100">
-                <div class="card-header bg-transparent">
+            <div class="card card-elevated h-100 animate-on-scroll">
+                <div class="card-header card-header-clean">
                     <h5 class="mb-0"><i class="bi bi-list-check"></i> Últimas Partidas</h5>
                 </div>
                 <div class="card-body p-0">
@@ -158,8 +164,8 @@
         </div>
 
         <div class="col-md-6">
-            <div class="card card-elevated h-100">
-                <div class="card-header bg-transparent">
+            <div class="card card-elevated h-100 animate-on-scroll">
+                <div class="card-header card-header-clean">
                     <h5 class="mb-0"><i class="bi bi-clock"></i> Últimos Treinos</h5>
                 </div>
                 <div class="card-body p-0">

@@ -4,18 +4,18 @@
 <head><title>Treinos - Painel de Tênis de Mesa</title></head>
 <body>
 <section layout:fragment="content">
-    <div class="d-flex justify-content-between align-items-center mt-4 mb-3">
+    <div class="d-flex justify-content-between align-items-center mt-4 mb-3 animate-on-scroll">
         <h2><i class="bi bi-clock"></i> Treinos</h2>
         <a href="/treinos/novo" class="btn btn-primary d-none d-md-inline-block"><i class="bi bi-plus-circle"></i> Novo Treino</a>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-12 col-md-4 mb-3">
-            <div class="card card-gradient-success text-center h-100">
-                <div class="card-body py-4">
-                    <h5 class="card-title"><i class="bi bi-calendar-day"></i> Hoje</h5>
-                    <p class="stat-value" th:text="${@treinoHelper.formatDuracao(resumoHoje.total)}"></p>
-                    <small>
+    <div class="row mb-4 stagger-children g-1 g-md-3">
+        <div class="col-4 mb-2">
+            <div class="card card-gradient-success text-center h-100 card-3d">
+                <div class="card-body py-2 py-md-4 px-1 px-md-3">
+                    <h5 class="card-title small mb-1 mb-md-2"><i class="bi bi-calendar-day"></i> <span class="d-none d-md-inline">Hoje</span><span class="d-md-none">Hoje</span></h5>
+                    <p class="stat-value mb-0 small" th:text="${@treinoHelper.formatDuracao(resumoHoje.total)}"></p>
+                    <small class="d-none d-md-inline">
                         <span th:each="tipo : ${tipos}">
                             <span th:text="${tipo.name() + ': ' + (resumoHoje.breakdown != null and resumoHoje.breakdown.containsKey(tipo) ? @treinoHelper.formatDuracao(resumoHoje.breakdown.get(tipo)) : '0')}"></span>
                             <span th:unless="${tipo.ordinal() == tipos.length - 1}"> | </span>
@@ -24,12 +24,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-4 mb-3">
-            <div class="card card-gradient-info text-center h-100">
-                <div class="card-body py-4">
-                    <h5 class="card-title"><i class="bi bi-calendar-week"></i> Esta Semana</h5>
-                    <p class="stat-value" th:text="${@treinoHelper.formatDuracao(resumoSemana.total)}"></p>
-                    <small>
+        <div class="col-4 mb-2">
+            <div class="card card-gradient-info text-center h-100 card-3d">
+                <div class="card-body py-2 py-md-4 px-1 px-md-3">
+                    <h5 class="card-title small mb-1 mb-md-2"><i class="bi bi-calendar-week"></i> <span class="d-none d-md-inline">Esta Semana</span><span class="d-md-none">Semana</span></h5>
+                    <p class="stat-value mb-0 small" th:text="${@treinoHelper.formatDuracao(resumoSemana.total)}"></p>
+                    <small class="d-none d-md-inline">
                         <span th:each="tipo : ${tipos}">
                             <span th:text="${tipo.name() + ': ' + (resumoSemana.breakdown != null and resumoSemana.breakdown.containsKey(tipo) ? @treinoHelper.formatDuracao(resumoSemana.breakdown.get(tipo)) : '0')}"></span>
                             <span th:unless="${tipo.ordinal() == tipos.length - 1}"> | </span>
@@ -38,12 +38,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-12 col-md-4 mb-3">
-            <div class="card card-gradient-warning text-center h-100">
-                <div class="card-body py-4">
-                    <h5 class="card-title"><i class="bi bi-calendar-month"></i> Este Mês</h5>
-                    <p class="stat-value" th:text="${@treinoHelper.formatDuracao(resumoMes.total)}"></p>
-                    <small>
+        <div class="col-4 mb-2">
+            <div class="card card-gradient-warning text-center h-100 card-3d">
+                <div class="card-body py-2 py-md-4 px-1 px-md-3">
+                    <h5 class="card-title small mb-1 mb-md-2"><i class="bi bi-calendar-month"></i> <span class="d-none d-md-inline">Este Mês</span><span class="d-md-none">Mês</span></h5>
+                    <p class="stat-value mb-0 small" th:text="${@treinoHelper.formatDuracao(resumoMes.total)}"></p>
+                    <small class="d-none d-md-inline">
                         <span th:each="tipo : ${tipos}">
                             <span th:text="${tipo.name() + ': ' + (resumoMes.breakdown != null and resumoMes.breakdown.containsKey(tipo) ? @treinoHelper.formatDuracao(resumoMes.breakdown.get(tipo)) : '0')}"></span>
                             <span th:unless="${tipo.ordinal() == tipos.length - 1}"> | </span>
@@ -54,14 +54,14 @@
         </div>
     </div>
 
-    <h3>Histórico</h3>
-    <div th:if="${#lists.isEmpty(treinos)}" class="alert alert-info text-center py-4">
+    <h3 class="animate-on-scroll">Histórico</h3>
+    <div th:if="${#lists.isEmpty(treinos)}" class="alert alert-info text-center py-4 animate-on-scroll">
         <i class="bi bi-clock display-4 d-block mb-2"></i>
         Nenhum treino registrado.
     </div>
-    <div th:unless="${#lists.isEmpty(treinos)}" class="row">
+    <div th:unless="${#lists.isEmpty(treinos)}" class="row stagger-children">
         <div th:each="t : ${treinos}" class="col-12 col-md-4 col-lg-3 mb-3">
-            <div class="card card-elevated h-100">
+            <div class="card card-elevated h-100 card-3d">
                 <div class="card-body d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-start mb-2">
                         <span class="fw-semibold" th:text="${#temporals.format(t.data, 'dd/MM/yyyy')}"></span>

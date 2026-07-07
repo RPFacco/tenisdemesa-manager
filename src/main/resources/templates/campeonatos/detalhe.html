@@ -4,7 +4,7 @@
 <head><title th:text="${campeonato.nome} + ' - Painel de Tênis de Mesa'"></title></head>
 <body>
 <section layout:fragment="content">
-    <div class="d-flex justify-content-between align-items-center mt-4">
+    <div class="d-flex justify-content-between align-items-center mt-4 animate-on-scroll">
         <div>
             <h2><i class="bi bi-trophy"></i> <span th:text="${campeonato.nome}"></span></h2>
             <p class="text-muted">
@@ -22,25 +22,25 @@
         </div>
     </div>
 
-    <div class="row mt-3">
+    <div class="row mt-3 stagger-children">
         <div class="col-md-4 mb-3">
-            <div class="card card-gradient-success text-center">
+            <div class="card card-gradient-success text-center card-3d">
                 <div class="card-body py-4">
                     <h5>Vitórias</h5>
-                    <span class="stat-value" th:text="${vitorias}">0</span>
+                    <span class="stat-value animate-counter" th:text="${vitorias}">0</span>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-3">
-            <div class="card card-gradient-danger text-center">
+            <div class="card card-gradient-danger text-center card-3d">
                 <div class="card-body py-4">
                     <h5>Derrotas</h5>
-                    <span class="stat-value" th:text="${derrotas}">0</span>
+                    <span class="stat-value animate-counter" th:text="${derrotas}">0</span>
                 </div>
             </div>
         </div>
         <div class="col-md-4 mb-3">
-            <div class="card card-gradient-info text-center">
+            <div class="card card-gradient-info text-center card-3d">
                 <div class="card-body py-4">
                     <h5>Taxa de Vitória</h5>
                     <span class="stat-value" th:text="${taxaVitoria}">—</span>
@@ -49,8 +49,8 @@
         </div>
     </div>
 
-    <div class="card card-elevated mt-4">
-        <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+    <div class="card card-elevated mt-4 animate-on-scroll">
+        <div class="card-header card-header-clean d-flex justify-content-between align-items-center">
             <h3 class="mb-0"><i class="bi bi-list-check"></i> Partidas</h3>
             <a th:href="@{/campeonatos/{id}/partidas/nova(id=${campeonato.id})}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Nova Partida</a>
         </div>
@@ -135,8 +135,8 @@
         </div>
     </div>
 
-    <div class="card card-elevated mt-4">
-        <div class="card-header bg-transparent d-flex justify-content-between align-items-center">
+    <div class="card card-elevated mt-4 animate-on-scroll">
+        <div class="card-header card-header-clean d-flex justify-content-between align-items-center">
             <h3 class="mb-0"><i class="bi bi-stars"></i> Medalhas</h3>
             <a th:href="@{/campeonatos/{id}/medalhas/nova(id=${campeonato.id})}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Nova Medalha</a>
         </div>
@@ -162,7 +162,9 @@
                                                           m.tipo.name() == 'PRATA' ? 'bi-star-fill text-secondary' : 
                                                           'bi-star-fill'}"
                                    th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
-                                <span th:text="${m.tipo.name()}"></span>
+                                <span th:text="${m.tipo.name()}"
+                                      th:classappend="${m.tipo.name() == 'OURO' ? 'fw-bold text-warning' : m.tipo.name() == 'PRATA' ? 'fw-bold text-secondary' : 'fw-bold'}"
+                                      th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></span>
                             </td>
                             <td th:text="${m.modalidade.name().replace('_', ' ')}"></td>
                             <td>
@@ -180,10 +182,13 @@
                     <div>
                         <i class="medal-icon bi"
                            th:classappend="${m.tipo.name() == 'OURO' ? 'bi-star-fill text-warning' : 
-                                                  m.tipo.name() == 'PRATA' ? 'bi-star-fill text-secondary' : 
-                                                  'bi-star-fill'}"
+                                                   m.tipo.name() == 'PRATA' ? 'bi-star-fill text-secondary' : 
+                                                   'bi-star-fill'}"
                            th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
-                        <span class="fw-semibold ms-1" th:text="${m.tipo.name()}"></span>
+                        <span class="fw-semibold ms-1"
+                              th:classappend="${m.tipo.name() == 'OURO' ? 'text-warning' : m.tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
+                              th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"
+                              th:text="${m.tipo.name()}"></span>
                         <span class="text-muted ms-2" th:text="${m.modalidade.name().replace('_', ' ')}"></span>
                     </div>
                     <form th:action="@{/campeonatos/{cid}/medalhas/{mid}/excluir(cid=${campeonato.id}, mid=${m.id})}" method="post" style="display:inline"

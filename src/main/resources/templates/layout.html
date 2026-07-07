@@ -1,222 +1,34 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Painel de Tênis de Mesa</title>
-    <link rel="stylesheet" href="/css/bootswatch-flatly.min.css">
+    <script>
+        (function() {
+            var theme = localStorage.getItem('theme-preference');
+            if (theme === 'dark') {
+                document.documentElement.setAttribute('data-theme', 'dark');
+            }
+        })();
+    </script>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-icons.min.css">
-    <style>
-        .card-gradient-success {
-            background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
-            color: #fff;
-            border: none;
-            box-shadow: 0 4px 15px rgba(0, 184, 148, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card-gradient-success:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 184, 148, 0.4);
-        }
-        .card-gradient-danger {
-            background: linear-gradient(135deg, #e17055 0%, #d63031 100%);
-            color: #fff;
-            border: none;
-            box-shadow: 0 4px 15px rgba(214, 48, 49, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card-gradient-danger:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(214, 48, 49, 0.4);
-        }
-        .card-gradient-info {
-            background: linear-gradient(135deg, #0984e3 0%, #74b9ff 100%);
-            color: #fff;
-            border: none;
-            box-shadow: 0 4px 15px rgba(9, 132, 227, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card-gradient-info:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(9, 132, 227, 0.4);
-        }
-        .card-gradient-warning {
-            background: linear-gradient(135deg, #fdcb6e 0%, #e17055 100%);
-            color: #fff;
-            border: none;
-            box-shadow: 0 4px 15px rgba(253, 203, 110, 0.3);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .card-gradient-warning:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(253, 203, 110, 0.4);
-        }
-        .card-elevated {
-            border: none;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            border-radius: 12px;
-        }
-        .card-elevated:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-        }
-        .card-border-categoria {
-            border-left: 5px solid #18bc9c;
-            border-radius: 12px;
-        }
-        .navbar .nav-link.active {
-            font-weight: 600;
-            border-bottom: 2px solid rgba(255, 255, 255, 0.8);
-        }
-        .footer-custom {
-            background: #2c3e50;
-            color: rgba(255, 255, 255, 0.7);
-            padding: 16px 0;
-            margin-top: 48px;
-            font-size: 0.85rem;
-        }
-        .badge-tipo-treino {
-            font-size: 0.8rem;
-            padding: 0.35em 0.65em;
-            border-radius: 50px;
-        }
-        .btn-action {
-            border-radius: 50px;
-            transition: all 0.2s ease;
-        }
-        .btn-action:hover {
-            transform: scale(1.05);
-        }
-        body {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        .content-wrapper {
-            flex: 1;
-            -webkit-transform: translateZ(0);
-            transform: translateZ(0);
-        }
-        .medal-icon {
-            font-size: 1.8rem;
-            margin-right: 4px;
-        }
-        .stat-value {
-            font-size: 2.5rem;
-            font-weight: 700;
-        }
-        @media (max-width: 575.98px) {
-            .stat-value {
-                font-size: 1.8rem;
-            }
-        }
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            z-index: 1030;
-            background: #fff;
-            border-top: 1px solid rgba(0,0,0,0.08);
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            height: 64px;
-            padding-bottom: env(safe-area-inset-bottom, 0);
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.06);
-        }
-        .bottom-nav a {
-            flex: 1;
-            text-align: center;
-            color: #6c757d;
-            text-decoration: none;
-            font-size: 0.7rem;
-            padding: 6px 0;
-            transition: color 0.2s, background-color 0.15s;
-            min-height: 44px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .bottom-nav a:active {
-            background-color: rgba(24, 188, 156, 0.1);
-            color: #18bc9c;
-        }
-        .bottom-nav a i {
-            font-size: 1.3rem;
-            margin-bottom: 2px;
-            transition: transform 0.15s;
-        }
-        .bottom-nav a:active i {
-            transform: scale(1.2);
-        }
-        .bottom-nav a.active {
-            color: #18bc9c;
-            transform: scale(1.05);
-        }
-        .bottom-nav a.active i {
-            font-weight: 700;
-        }
-        .fab {
-            position: fixed;
-            bottom: 80px;
-            right: 16px;
-            z-index: 1031;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-            transition: transform 0.2s;
-            color: #fff;
-            background: #18bc9c;
-            border: none;
-        }
-        .fab:hover {
-            transform: scale(1.1);
-            color: #fff;
-        }
-        .fab:active {
-            transform: scale(0.92);
-            box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-        }
-        .fab i {
-            line-height: 1;
-        }
-        @media (max-width: 767.98px) {
-            .btn-sm, .btn {
-                min-height: 44px;
-                display: inline-flex;
-                align-items: center;
-            }
-        }
-        .page-container {
-            padding-top: 88px;
-        }
-        @media (max-width: 767.98px) {
-            .page-container {
-                padding-top: 16px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/css/app.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-md navbar-dark bg-primary fixed-top d-none d-md-block">
+    <div class="animated-bg"></div>
+
+    <nav class="navbar navbar-expand-md navbar-modern fixed-top d-none d-md-block">
         <div class="container">
-            <a class="navbar-brand fw-bold" href="/">
+            <a class="navbar-brand" href="/">
                 <i class="bi bi-table-tennis"></i> Tênis de Mesa
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
+                <ul class="navbar-nav ms-auto align-items-center">
                     <li class="nav-item">
                         <a class="nav-link" th:classappend="${#strings.startsWith(currentUri, '/campeonatos')} ? 'active' : ''" th:href="@{/campeonatos}"><i class="bi bi-trophy"></i> Campeonatos</a>
                     </li>
@@ -226,12 +38,17 @@
                     <li class="nav-item">
                         <a class="nav-link" th:classappend="${currentUri == '/' or #strings.startsWith(currentUri, '/geral')} ? 'active' : ''" th:href="@{/geral}"><i class="bi bi-bar-chart"></i> Geral</a>
                     </li>
+                    <li class="nav-item ms-2">
+                        <button id="theme-toggle" class="theme-toggle" aria-label="Alternar tema">
+                            <i class="bi bi-moon-stars"></i>
+                        </button>
+                    </li>
                 </ul>
             </div>
         </div>
     </nav>
 
-    <div class="content-wrapper" style="padding-bottom: 80px;">
+    <div class="content-wrapper">
         <div class="container page-container">
             <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show mt-3">
                 <span th:text="${mensagem}"></span>
@@ -251,20 +68,39 @@
     </footer>
 
     <nav class="bottom-nav d-md-none">
-        <a th:classappend="${#strings.startsWith(currentUri, '/campeonatos')} ? 'active' : ''" th:href="@{/campeonatos}">
-            <i class="bi bi-trophy"></i>
-            <span>Campeonatos</span>
-        </a>
-        <a th:classappend="${#strings.startsWith(currentUri, '/treinos')} ? 'active' : ''" th:href="@{/treinos}">
-            <i class="bi bi-clock"></i>
-            <span>Treino</span>
-        </a>
-        <a th:classappend="${currentUri == '/' or #strings.startsWith(currentUri, '/geral')} ? 'active' : ''" th:href="@{/geral}">
-            <i class="bi bi-bar-chart"></i>
-            <span>Geral</span>
+        <div class="bottom-nav-group">
+            <a th:classappend="${#strings.startsWith(currentUri, '/campeonatos')} ? 'active' : ''" th:href="@{/campeonatos}" class="nav-item-mobile">
+                <i class="bi bi-trophy"></i>
+                <span>Campeonatos</span>
+            </a>
+            <a th:classappend="${#strings.startsWith(currentUri, '/treinos')} ? 'active' : ''" th:href="@{/treinos}" class="nav-item-mobile">
+                <i class="bi bi-clock"></i>
+                <span>Treino</span>
+            </a>
+            <a th:classappend="${currentUri == '/' or #strings.startsWith(currentUri, '/geral')} ? 'active' : ''" th:href="@{/geral}" class="nav-item-mobile">
+                <i class="bi bi-bar-chart"></i>
+                <span>Geral</span>
+            </a>
+        </div>
+        <a id="theme-toggle-mobile" class="theme-btn-mobile">
+            <i class="bi bi-moon-stars"></i>
+            <span>Tema</span>
         </a>
     </nav>
 
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var toggleMobile = document.getElementById('theme-toggle-mobile');
+            if (toggleMobile) {
+                toggleMobile.addEventListener('click', function () {
+                    var btn = document.getElementById('theme-toggle');
+                    if (btn) btn.click();
+                });
+            }
+        });
+    </script>
+
     <script src="/js/bootstrap.bundle.min.js"></script>
+    <script src="/js/app.js"></script>
 </body>
 </html>
