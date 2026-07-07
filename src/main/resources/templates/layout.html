@@ -181,6 +181,14 @@
                 align-items: center;
             }
         }
+        .page-container {
+            padding-top: 88px;
+        }
+        @media (max-width: 767.98px) {
+            .page-container {
+                padding-top: 16px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -209,7 +217,7 @@
     </nav>
 
     <div class="content-wrapper" style="padding-bottom: 80px;">
-        <div class="container" style="padding-top: 88px;">
+        <div class="container page-container">
             <div th:if="${mensagem}" class="alert alert-success alert-dismissible fade show mt-3">
                 <span th:text="${mensagem}"></span>
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
