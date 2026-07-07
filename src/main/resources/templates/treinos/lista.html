@@ -18,7 +18,7 @@
                     <small class="text-muted">
                         <span th:each="tipo : ${tipos}">
                             <span th:text="${tipo.name() + ': ' + (resumoHoje.breakdown != null and resumoHoje.breakdown.containsKey(tipo) ? #numbers.formatDecimal(resumoHoje.breakdown.get(tipo), 1, 1) : '0')}"></span>
-                            <span th:unless="${tipo.ordinal() == tipos.size() - 1}"> | </span>
+                            <span th:unless="${tipo.ordinal() == tipos.length - 1}"> | </span>
                         </span>
                     </small>
                 </div>
@@ -32,7 +32,7 @@
                     <small class="text-muted">
                         <span th:each="tipo : ${tipos}">
                             <span th:text="${tipo.name() + ': ' + (resumoSemana.breakdown != null and resumoSemana.breakdown.containsKey(tipo) ? #numbers.formatDecimal(resumoSemana.breakdown.get(tipo), 1, 1) : '0')}"></span>
-                            <span th:unless="${tipo.ordinal() == tipos.size() - 1}"> | </span>
+                            <span th:unless="${tipo.ordinal() == tipos.length - 1}"> | </span>
                         </span>
                     </small>
                 </div>
@@ -46,7 +46,7 @@
                     <small class="text-muted">
                         <span th:each="tipo : ${tipos}">
                             <span th:text="${tipo.name() + ': ' + (resumoMes.breakdown != null and resumoMes.breakdown.containsKey(tipo) ? #numbers.formatDecimal(resumoMes.breakdown.get(tipo), 1, 1) : '0')}"></span>
-                            <span th:unless="${tipo.ordinal() == tipos.size() - 1}"> | </span>
+                            <span th:unless="${tipo.ordinal() == tipos.length - 1}"> | </span>
                         </span>
                     </small>
                 </div>
