@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 
 @Entity
+@Table(indexes = @Index(name = "idx_treino_data", columnList = "data"))
 public class Treino {
 
     @Id

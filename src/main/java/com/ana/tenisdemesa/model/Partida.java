@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@Table(indexes = @Index(name = "idx_partida_data", columnList = "data"))
 public class Partida {
 
     @Id
