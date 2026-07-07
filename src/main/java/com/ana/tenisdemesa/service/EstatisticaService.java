@@ -1,11 +1,11 @@
 package com.ana.tenisdemesa.service;
 
-import com.ana.tenisdemesa.model.Campeonato;
 import com.ana.tenisdemesa.model.Medalha;
 import com.ana.tenisdemesa.model.Partida;
 import com.ana.tenisdemesa.model.enums.ResultadoPartida;
 import com.ana.tenisdemesa.model.enums.TipoMedalha;
 import com.ana.tenisdemesa.repository.CampeonatoRepository;
+import com.ana.tenisdemesa.repository.PartidaRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
@@ -15,9 +15,11 @@ import java.util.stream.Collectors;
 public class EstatisticaService {
 
     private final CampeonatoRepository campeonatoRepository;
+    private final PartidaRepository partidaRepository;
 
-    public EstatisticaService(CampeonatoRepository campeonatoRepository) {
+    public EstatisticaService(CampeonatoRepository campeonatoRepository, PartidaRepository partidaRepository) {
         this.campeonatoRepository = campeonatoRepository;
+        this.partidaRepository = partidaRepository;
     }
 
     public long totalCampeonatos() {
@@ -70,13 +72,23 @@ public class EstatisticaService {
         return sequenciaAtual(null, null);
     }
 
-    public String sequenciaAtual(LocalDate inicio, LocalDate fim) {
-        List<Partida> todas = partidasNoPeriodo(inicio, fim);
-        if (todas.isEmpty()) return "—";
+    private List<Partida> partidasNoPeriodo(LocalDate inicio, LocalDate fim) {
+        if (inicio != null && fim != null) {
+            return partidaRepository.findByDataBetween(inicio, fim);
+        }
+        return partidaRepository.findAll();
+    }
 
-        List<Partida> ordenadas = todas.stream()
-                .sorted(Comparator.comparing(Partida::getData).reversed())
-                .toList();
+    public String sequenciaAtual(LocalDate inicio, LocalDate fim) {
+        List<Partida> ordenadas;
+        if (inicio != null && fim != null) {
+            ordenadas = partidaRepository.findByDataBetweenOrderByDataDesc(inicio, fim);
+        } else {
+            ordenadas = partidaRepository.findAll().stream()
+                    .sorted(Comparator.comparing(Partida::getData).reversed())
+                    .toList();
+        }
+        if (ordenadas.isEmpty()) return "—";
 
         ResultadoPartida primeiro = ordenadas.get(0).getResultado();
         if (primeiro == null) return "—";
@@ -91,21 +103,5 @@ public class EstatisticaService {
         }
         String label = primeiro == ResultadoPartida.VITORIA ? "V" : "D";
         return count + label;
-    }
-
-    private List<Partida> partidasNoPeriodo(LocalDate inicio, LocalDate fim) {
-        return todasPartidas().stream()
-                .filter(p -> {
-                    if (inicio != null && p.getData().isBefore(inicio)) return false;
-                    if (fim != null && p.getData().isAfter(fim)) return false;
-                    return true;
-                })
-                .collect(Collectors.toList());
-    }
-
-    private List<Partida> todasPartidas() {
-        return campeonatoRepository.findAll().stream()
-                .flatMap(c -> c.getPartidas().stream())
-                .collect(Collectors.toList());
     }
 }

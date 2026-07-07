@@ -34,27 +34,23 @@ public class TreinoService {
 
     public Map<String, Object> resumoDiario() {
         LocalDate hoje = LocalDate.now();
-        List<Treino> treinosHoje = listar().stream()
-                .filter(t -> t.getData().equals(hoje))
-                .toList();
+        List<Treino> treinosHoje = repository.findByData(hoje);
         return buildResumo(treinosHoje);
     }
 
     public Map<String, Object> resumoSemanal() {
         LocalDate hoje = LocalDate.now();
         LocalDate inicioSemana = hoje.with(TemporalAdjusters.previousOrSame(DayOfWeek.MONDAY));
-        LocalDate fimSemana = hoje.with(TemporalAdjusters.nextOrSame(DayOfWeek.SUNDAY));
-        List<Treino> treinosSemana = listar().stream()
-                .filter(t -> !t.getData().isBefore(inicioSemana) && !t.getData().isAfter(fimSemana))
-                .toList();
+        LocalDate fimSemana = inicioSemana.plusDays(6);
+        List<Treino> treinosSemana = repository.findByDataBetween(inicioSemana, fimSemana);
         return buildResumo(treinosSemana);
     }
 
     public Map<String, Object> resumoMensal() {
         YearMonth mesCorrente = YearMonth.now();
-        List<Treino> treinosMes = listar().stream()
-                .filter(t -> YearMonth.from(t.getData()).equals(mesCorrente))
-                .toList();
+        LocalDate inicioMes = mesCorrente.atDay(1);
+        LocalDate fimMes = mesCorrente.atEndOfMonth();
+        List<Treino> treinosMes = repository.findByDataBetween(inicioMes, fimMes);
         return buildResumo(treinosMes);
     }
 
