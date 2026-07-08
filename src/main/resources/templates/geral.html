@@ -9,17 +9,82 @@
         <h2 class="mb-0"><i class="bi bi-bar-chart"></i> Estatísticas Gerais</h2>
         <div class="btn-group btn-group-sm flex-wrap" role="group">
             <a th:href="@{/geral(periodo='ano')}"
+               hx-get="/geral?periodo=ano" hx-target="#estatisticas-container" hx-swap="outerHTML"
                class="btn btn-sm"
                th:classappend="${periodo == 'ano' or periodo == null} ? 'btn-primary' : 'btn-outline-primary'">Ano</a>
             <a th:href="@{/geral(periodo='30d')}"
+               hx-get="/geral?periodo=30d" hx-target="#estatisticas-container" hx-swap="outerHTML"
                class="btn btn-sm"
                th:classappend="${periodo == '30d'} ? 'btn-primary' : 'btn-outline-primary'">30 dias</a>
             <a th:href="@{/geral(periodo='todos')}"
+               hx-get="/geral?periodo=todos" hx-target="#estatisticas-container" hx-swap="outerHTML"
                class="btn btn-sm"
                th:classappend="${periodo == 'todos'} ? 'btn-primary' : 'btn-outline-primary'">Todos</a>
         </div>
     </div>
 
+    <div id="estatisticas-container">
+        <div th:replace="geral :: estatisticas-cards"></div>
+        <div th:replace="geral :: campeonato-atual"></div>
+        <div th:replace="geral :: medalhas"></div>
+    </div>
+
+    <div class="row mb-4">
+        <div class="col-md-6 mb-4 mb-md-0">
+            <div class="card card-elevated h-100 animate-on-scroll">
+                <div class="card-header card-header-clean">
+                    <h5 class="mb-0"><i class="bi bi-list-check"></i> Últimas Partidas</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div th:if="${#lists.isEmpty(ultimasPartidas)}" class="text-center py-4">
+                        <i class="bi bi-list-check display-6 d-block mb-2 text-muted"></i>
+                        <p class="mb-1 text-muted">Nenhuma partida registrada</p>
+                        <a th:href="@{/campeonatos}" class="btn btn-outline-primary btn-sm">Ver campeonatos</a>
+                    </div>
+                    <ul th:unless="${#lists.isEmpty(ultimasPartidas)}" class="list-group list-group-flush">
+                        <li th:each="p : ${ultimasPartidas}" class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <div>
+                                <span class="badge bg-light text-dark me-2" th:text="${#temporals.format(p.data, 'dd/MM')}">12/06</span>
+                                <span class="fw-semibold" th:text="${p.adversario}">Adversário</span>
+                                <span class="badge bg-light text-dark ms-1" th:text="${p.placar}">3-1</span>
+                                <span class="text-muted small ms-2" th:text="'(' + ${p.campeonato.nome} + ')'"></span>
+                            </div>
+                            <span th:if="${p.resultado != null and p.resultado.name() == 'VITORIA'}" class="badge bg-success">VITÓRIA</span>
+                            <span th:if="${p.resultado != null and p.resultado.name() == 'DERROTA'}" class="badge bg-danger">DERROTA</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card card-elevated h-100 animate-on-scroll">
+                <div class="card-header card-header-clean">
+                    <h5 class="mb-0"><i class="bi bi-clock"></i> Últimos Treinos</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div th:if="${#lists.isEmpty(ultimosTreinos)}" class="text-center py-4">
+                        <i class="bi bi-clock display-6 d-block mb-2 text-muted"></i>
+                        <p class="mb-1 text-muted">Nenhum treino registrado</p>
+                        <a th:href="@{/treinos/novo}" class="btn btn-outline-primary btn-sm">Novo treino</a>
+                    </div>
+                    <ul th:unless="${#lists.isEmpty(ultimosTreinos)}" class="list-group list-group-flush">
+                        <li th:each="t : ${ultimosTreinos}" class="list-group-item d-flex justify-content-between align-items-center py-2">
+                            <div>
+                                <span class="badge bg-light text-dark me-2" th:text="${#temporals.format(t.data, 'dd/MM')}">11/06</span>
+                                <span th:text="${t.tipo.name()}">Técnica</span>
+                            </div>
+                            <span class="text-muted small" th:text="${@treinoHelper.formatDuracao(t.duracaoHoras)}">45min</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</section>
+
+<div th:fragment="estatisticas-cards">
     <div class="row stagger-children">
         <div class="col-6 col-md-3 mb-3">
             <div class="card card-gradient-success text-center h-100 card-3d">
@@ -54,7 +119,9 @@
             </div>
         </div>
     </div>
+</div>
 
+<div th:fragment="campeonato-atual">
     <div th:if="${campeonatoAtual != null}" class="card card-elevated mb-4 animate-on-scroll">
         <div class="card-header card-header-clean">
             <h4 class="mb-0"><i class="bi bi-flag" style="color: var(--color-primary);"></i> Campeonato Atual</h4>
@@ -114,7 +181,9 @@
             <a th:href="@{/campeonatos/novo}" class="btn btn-primary btn-sm">Criar campeonato</a>
         </div>
     </div>
+</div>
 
+<div th:fragment="medalhas">
     <div class="row mb-4">
         <div class="col-12">
             <h5 class="mb-3 animate-on-scroll"><i class="bi bi-stars"></i> Medalhas</h5>
@@ -134,60 +203,15 @@
             </div>
         </div>
     </div>
+</div>
 
-    <div class="row mb-4">
-        <div class="col-md-6 mb-4 mb-md-0">
-            <div class="card card-elevated h-100 animate-on-scroll">
-                <div class="card-header card-header-clean">
-                    <h5 class="mb-0"><i class="bi bi-list-check"></i> Últimas Partidas</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div th:if="${#lists.isEmpty(ultimasPartidas)}" class="text-center py-4">
-                        <i class="bi bi-list-check display-6 d-block mb-2 text-muted"></i>
-                        <p class="mb-1 text-muted">Nenhuma partida registrada</p>
-                        <a th:href="@{/campeonatos}" class="btn btn-outline-primary btn-sm">Ver campeonatos</a>
-                    </div>
-                    <ul th:unless="${#lists.isEmpty(ultimasPartidas)}" class="list-group list-group-flush">
-                        <li th:each="p : ${ultimasPartidas}" class="list-group-item d-flex justify-content-between align-items-center py-2">
-                            <div>
-                                <span class="badge bg-light text-dark me-2" th:text="${#temporals.format(p.data, 'dd/MM')}">12/06</span>
-                                <span class="fw-semibold" th:text="${p.adversario}">Adversário</span>
-                                <span class="badge bg-light text-dark ms-1" th:text="${p.placar}">3-1</span>
-                                <span class="text-muted small ms-2" th:text="'(' + ${p.campeonato.nome} + ')'"></span>
-                            </div>
-                            <span th:if="${p.resultado != null and p.resultado.name() == 'VITORIA'}" class="badge bg-success">VITÓRIA</span>
-                            <span th:if="${p.resultado != null and p.resultado.name() == 'DERROTA'}" class="badge bg-danger">DERROTA</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-md-6">
-            <div class="card card-elevated h-100 animate-on-scroll">
-                <div class="card-header card-header-clean">
-                    <h5 class="mb-0"><i class="bi bi-clock"></i> Últimos Treinos</h5>
-                </div>
-                <div class="card-body p-0">
-                    <div th:if="${#lists.isEmpty(ultimosTreinos)}" class="text-center py-4">
-                        <i class="bi bi-clock display-6 d-block mb-2 text-muted"></i>
-                        <p class="mb-1 text-muted">Nenhum treino registrado</p>
-                        <a th:href="@{/treinos/novo}" class="btn btn-outline-primary btn-sm">Novo treino</a>
-                    </div>
-                    <ul th:unless="${#lists.isEmpty(ultimosTreinos)}" class="list-group list-group-flush">
-                        <li th:each="t : ${ultimosTreinos}" class="list-group-item d-flex justify-content-between align-items-center py-2">
-                            <div>
-                                <span class="badge bg-light text-dark me-2" th:text="${#temporals.format(t.data, 'dd/MM')}">11/06</span>
-                                <span th:text="${t.tipo.name()}">Técnica</span>
-                            </div>
-                            <span class="text-muted small" th:text="${@treinoHelper.formatDuracao(t.duracaoHoras)}">45min</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+<div th:fragment="estatisticas">
+    <div id="estatisticas-container">
+        <div th:replace="geral :: estatisticas-cards"></div>
+        <div th:replace="geral :: campeonato-atual"></div>
+        <div th:replace="geral :: medalhas"></div>
     </div>
+</div>
 
-</section>
 </body>
 </html>

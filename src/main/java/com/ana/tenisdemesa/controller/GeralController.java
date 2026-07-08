@@ -8,6 +8,7 @@ import com.ana.tenisdemesa.service.EstatisticaService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import java.time.LocalDate;
 
@@ -32,7 +33,9 @@ public class GeralController {
     }
 
     @GetMapping("/geral")
-    public String geral(@RequestParam(defaultValue = "ano") String periodo, Model model) {
+    public String geral(@RequestParam(defaultValue = "ano") String periodo,
+                        @RequestHeader(value = "HX-Request", required = false) Boolean hxRequest,
+                        Model model) {
         LocalDate inicio = null;
         LocalDate fim = null;
         String periodoLabel = "Ano";
@@ -46,6 +49,8 @@ public class GeralController {
             fim = LocalDate.now();
             inicio = fim.minusDays(30);
             periodoLabel = "30 dias";
+        } else if ("todos".equals(periodo)) {
+            periodoLabel = "Todos";
         }
 
         model.addAttribute("totalVitorias", estatisticaService.totalVitorias(inicio, fim));
@@ -64,6 +69,9 @@ public class GeralController {
         }
         model.addAttribute("periodo", periodo);
         model.addAttribute("periodoLabel", periodoLabel);
+        if (Boolean.TRUE.equals(hxRequest)) {
+            return "geral :: estatisticas";
+        }
         return "geral";
     }
 }

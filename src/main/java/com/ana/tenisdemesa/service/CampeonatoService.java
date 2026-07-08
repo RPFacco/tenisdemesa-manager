@@ -5,7 +5,6 @@ import com.ana.tenisdemesa.model.Partida;
 import com.ana.tenisdemesa.repository.CampeonatoRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -35,21 +34,10 @@ public class CampeonatoService {
     }
 
     public Campeonato buscarAtual() {
-        List<Campeonato> todos = repository.findAll();
-        if (todos.isEmpty()) return null;
-
         LocalDate hoje = LocalDate.now();
-
-        Campeonato emAndamento = todos.stream()
-                .filter(c -> !c.getDataFim().isBefore(hoje))
-                .min(Comparator.comparing(Campeonato::getDataInicio).reversed())
-                .orElse(null);
-
-        if (emAndamento != null) return emAndamento;
-
-        return todos.stream()
-                .max(Comparator.comparing(Campeonato::getDataFim))
-                .orElse(null);
+        List<Campeonato> emAndamento = repository.findByDataFimGreaterThanEqualOrderByDataInicioDesc(hoje);
+        if (!emAndamento.isEmpty()) return emAndamento.get(0);
+        return repository.findTopByOrderByDataFimDesc().orElse(null);
     }
 
     public Map<String, Long> calcularProgresso(Campeonato campeonato) {

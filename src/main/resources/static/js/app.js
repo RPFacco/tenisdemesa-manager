@@ -200,4 +200,13 @@
     initCard3D();
     initFloatingLabels();
   });
+
+  document.addEventListener('htmx:afterSwap', function (evt) {
+    if (evt.detail.target && evt.detail.target.id === 'estatisticas-container') {
+      initAnimatedCounters();
+      initStaggeredAnimations();
+      initCard3D();
+      initScrollAnimations();
+    }
+  });
 })();

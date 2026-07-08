@@ -1,24 +1,25 @@
 package com.ana.tenisdemesa.service;
 
-import com.ana.tenisdemesa.model.Medalha;
 import com.ana.tenisdemesa.model.Partida;
 import com.ana.tenisdemesa.model.enums.ResultadoPartida;
 import com.ana.tenisdemesa.model.enums.TipoMedalha;
 import com.ana.tenisdemesa.repository.CampeonatoRepository;
+import com.ana.tenisdemesa.repository.MedalhaRepository;
 import com.ana.tenisdemesa.repository.PartidaRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class EstatisticaService {
 
     private final CampeonatoRepository campeonatoRepository;
+    private final MedalhaRepository medalhaRepository;
     private final PartidaRepository partidaRepository;
 
-    public EstatisticaService(CampeonatoRepository campeonatoRepository, PartidaRepository partidaRepository) {
+    public EstatisticaService(CampeonatoRepository campeonatoRepository, MedalhaRepository medalhaRepository, PartidaRepository partidaRepository) {
         this.campeonatoRepository = campeonatoRepository;
+        this.medalhaRepository = medalhaRepository;
         this.partidaRepository = partidaRepository;
     }
 
@@ -31,9 +32,10 @@ public class EstatisticaService {
     }
 
     public long totalVitorias(LocalDate inicio, LocalDate fim) {
-        return partidasNoPeriodo(inicio, fim).stream()
-                .filter(p -> p.getResultado() == ResultadoPartida.VITORIA)
-                .count();
+        if (inicio != null && fim != null) {
+            return partidaRepository.countByResultadoAndDataBetween(ResultadoPartida.VITORIA, inicio, fim);
+        }
+        return partidaRepository.countByResultado(ResultadoPartida.VITORIA);
     }
 
     public long totalDerrotas() {
@@ -41,9 +43,10 @@ public class EstatisticaService {
     }
 
     public long totalDerrotas(LocalDate inicio, LocalDate fim) {
-        return partidasNoPeriodo(inicio, fim).stream()
-                .filter(p -> p.getResultado() == ResultadoPartida.DERROTA)
-                .count();
+        if (inicio != null && fim != null) {
+            return partidaRepository.countByResultadoAndDataBetween(ResultadoPartida.DERROTA, inicio, fim);
+        }
+        return partidaRepository.countByResultado(ResultadoPartida.DERROTA);
     }
 
     public String taxaVitoria() {
@@ -60,23 +63,19 @@ public class EstatisticaService {
     }
 
     public Map<TipoMedalha, Long> medalhasPorTipo() {
-        return campeonatoRepository.findAll().stream()
-                .flatMap(c -> c.getMedalhas().stream())
-                .collect(Collectors.groupingBy(
-                        Medalha::getTipo,
-                        Collectors.counting()
-                ));
+        List<Object[]> resultados = medalhaRepository.countGroupedByTipo();
+        Map<TipoMedalha, Long> mapa = new LinkedHashMap<>();
+        for (TipoMedalha tipo : TipoMedalha.values()) {
+            mapa.put(tipo, 0L);
+        }
+        for (Object[] row : resultados) {
+            mapa.put((TipoMedalha) row[0], (Long) row[1]);
+        }
+        return mapa;
     }
 
     public String sequenciaAtual() {
         return sequenciaAtual(null, null);
-    }
-
-    private List<Partida> partidasNoPeriodo(LocalDate inicio, LocalDate fim) {
-        if (inicio != null && fim != null) {
-            return partidaRepository.findByDataBetween(inicio, fim);
-        }
-        return partidaRepository.findAll();
     }
 
     public String sequenciaAtual(LocalDate inicio, LocalDate fim) {
@@ -84,9 +83,8 @@ public class EstatisticaService {
         if (inicio != null && fim != null) {
             ordenadas = partidaRepository.findByDataBetweenOrderByDataDesc(inicio, fim);
         } else {
-            ordenadas = partidaRepository.findAll().stream()
-                    .sorted(Comparator.comparing(Partida::getData).reversed())
-                    .toList();
+            ordenadas = partidaRepository.findAll();
+            ordenadas.sort(Comparator.comparing(Partida::getData).reversed());
         }
         if (ordenadas.isEmpty()) return "—";
 
