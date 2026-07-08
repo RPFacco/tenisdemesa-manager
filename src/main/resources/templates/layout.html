@@ -82,23 +82,13 @@
                 <span>Geral</span>
             </a>
         </div>
-        <a id="theme-toggle-mobile" class="theme-btn-mobile">
-            <i class="bi bi-moon-stars"></i>
-            <span>Tema</span>
-        </a>
     </nav>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var toggleMobile = document.getElementById('theme-toggle-mobile');
-            if (toggleMobile) {
-                toggleMobile.addEventListener('click', function () {
-                    var btn = document.getElementById('theme-toggle');
-                    if (btn) btn.click();
-                });
-            }
-        });
-    </script>
+    <button id="theme-toggle-mobile" class="theme-toggle theme-toggle-mobile-float d-md-none" aria-label="Alternar tema">
+        <i class="bi bi-moon-stars"></i>
+    </button>
+
+
 
     <script src="/js/bootstrap.bundle.min.js"></script>
     <script src="/js/app.js"></script>

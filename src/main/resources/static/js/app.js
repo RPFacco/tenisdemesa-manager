@@ -11,26 +11,30 @@
       document.documentElement.setAttribute('data-theme', 'light');
     }
 
-    var toggleBtn = document.getElementById('theme-toggle');
-    if (toggleBtn) {
-      toggleBtn.addEventListener('click', function () {
-        var html = document.documentElement;
-        var current = html.getAttribute('data-theme');
-        if (current === 'dark') {
-          html.setAttribute('data-theme', 'light');
-          localStorage.setItem('theme-preference', 'light');
-          toggleBtn.innerHTML = '<i class="bi bi-moon-stars"></i>';
-        } else {
-          html.setAttribute('data-theme', 'dark');
-          localStorage.setItem('theme-preference', 'dark');
-          toggleBtn.innerHTML = '<i class="bi bi-sun"></i>';
-        }
+    var toggleBtns = document.querySelectorAll('.theme-toggle');
+    if (toggleBtns.length) {
+      toggleBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var html = document.documentElement;
+          var current = html.getAttribute('data-theme');
+          if (current === 'dark') {
+            html.setAttribute('data-theme', 'light');
+            localStorage.setItem('theme-preference', 'light');
+            toggleBtns.forEach(function (b) { b.innerHTML = '<i class="bi bi-moon-stars"></i>'; });
+          } else {
+            html.setAttribute('data-theme', 'dark');
+            localStorage.setItem('theme-preference', 'dark');
+            toggleBtns.forEach(function (b) { b.innerHTML = '<i class="bi bi-sun"></i>'; });
+          }
+        });
       });
 
       var currentTheme = document.documentElement.getAttribute('data-theme');
-      toggleBtn.innerHTML = currentTheme === 'dark'
-        ? '<i class="bi bi-sun"></i>'
-        : '<i class="bi bi-moon-stars"></i>';
+      toggleBtns.forEach(function (btn) {
+        btn.innerHTML = currentTheme === 'dark'
+          ? '<i class="bi bi-sun"></i>'
+          : '<i class="bi bi-moon-stars"></i>';
+      });
     }
   }
 
