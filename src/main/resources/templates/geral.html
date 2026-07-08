@@ -5,12 +5,12 @@
 <body>
 <section layout:fragment="content">
 
-    <div th:replace="geral :: periodo-filtro"></div>
+    <div th:replace="~{geral :: periodo-filtro}"></div>
 
     <div id="estatisticas-container">
-        <div th:replace="geral :: estatisticas-cards"></div>
-        <div th:replace="geral :: campeonato-atual"></div>
-        <div th:replace="geral :: medalhas"></div>
+        <div th:replace="~{geral :: estatisticas-cards}"></div>
+        <div th:replace="~{geral :: campeonato-atual}"></div>
+        <div th:replace="~{geral :: medalhas}"></div>
     </div>
 
     <div class="row mb-4">
@@ -228,9 +228,9 @@
         </div>
     </div>
     <div id="estatisticas-container">
-        <div th:replace="geral :: estatisticas-cards"></div>
-        <div th:replace="geral :: campeonato-atual"></div>
-        <div th:replace="geral :: medalhas"></div>
+        <div th:replace="~{geral :: estatisticas-cards}"></div>
+        <div th:replace="~{geral :: campeonato-atual}"></div>
+        <div th:replace="~{geral :: medalhas}"></div>
     </div>
 </div>
 
