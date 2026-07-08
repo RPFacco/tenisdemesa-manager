@@ -13,6 +13,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/campeonatos")
@@ -39,11 +40,8 @@ public class CampeonatoController {
     @PostMapping
     public String salvar(@Valid Campeonato campeonato, BindingResult result, RedirectAttributes redirect) {
         if (result.hasErrors()) return "campeonatos/form";
-        if (campeonato.getDataFim() != null && campeonato.getDataInicio() != null
-                && campeonato.getDataFim().isBefore(campeonato.getDataInicio())) {
-            result.rejectValue("dataFim", "", "Data fim deve ser maior ou igual à data início");
-            return "campeonatos/form";
-        }
+        service.validarDatas(campeonato, result);
+        if (result.hasErrors()) return "campeonatos/form";
         service.salvar(campeonato);
         redirect.addFlashAttribute("mensagem", "Campeonato salvo com sucesso!");
         return "redirect:/campeonatos";
@@ -52,19 +50,11 @@ public class CampeonatoController {
     @GetMapping("/{id}")
     public String detalhe(@PathVariable Long id, Model model) {
         Campeonato c = service.buscarPorId(id);
-        long vitorias = c.getPartidas().stream()
-                .filter(p -> p.getResultado() != null && p.getResultado().name().equals("VITORIA"))
-                .count();
-        long derrotas = c.getPartidas().stream()
-                .filter(p -> p.getResultado() != null && p.getResultado().name().equals("DERROTA"))
-                .count();
-        String taxa = (vitorias + derrotas) > 0
-                ? Math.round((double) vitorias / (vitorias + derrotas) * 100) + "%"
-                : "—";
+        Map<String, Object> stats = service.calcularEstatisticas(c);
         model.addAttribute("campeonato", c);
-        model.addAttribute("vitorias", vitorias);
-        model.addAttribute("derrotas", derrotas);
-        model.addAttribute("taxaVitoria", taxa);
+        model.addAttribute("vitorias", stats.get("vitorias"));
+        model.addAttribute("derrotas", stats.get("derrotas"));
+        model.addAttribute("taxaVitoria", stats.get("taxaVitoria"));
         return "campeonatos/detalhe";
     }
 
@@ -77,11 +67,8 @@ public class CampeonatoController {
     @PostMapping("/{id}")
     public String atualizar(@PathVariable Long id, @Valid Campeonato campeonato, BindingResult result, RedirectAttributes redirect) {
         if (result.hasErrors()) return "campeonatos/form";
-        if (campeonato.getDataFim() != null && campeonato.getDataInicio() != null
-                && campeonato.getDataFim().isBefore(campeonato.getDataInicio())) {
-            result.rejectValue("dataFim", "", "Data fim deve ser maior ou igual à data início");
-            return "campeonatos/form";
-        }
+        service.validarDatas(campeonato, result);
+        if (result.hasErrors()) return "campeonatos/form";
         campeonato.setId(id);
         service.salvar(campeonato);
         redirect.addFlashAttribute("mensagem", "Campeonato atualizado com sucesso!");

@@ -1,5 +1,6 @@
 package com.ana.tenisdemesa.controller;
 
+import com.ana.tenisdemesa.exception.NotFoundException;
 import com.ana.tenisdemesa.model.Campeonato;
 import com.ana.tenisdemesa.model.Partida;
 import com.ana.tenisdemesa.model.SetPartida;
@@ -58,7 +59,7 @@ public class PartidaController {
         Partida p = c.getPartidas().stream()
                 .filter(part -> part.getId().equals(partidaId))
                 .findFirst()
-                .orElseThrow(() -> new RuntimeException("Partida não encontrada"));
+                .orElseThrow(() -> new NotFoundException("Partida não encontrada"));
         model.addAttribute("partida", p);
         model.addAttribute("fases", FasePartida.values());
         return "partidas/form";

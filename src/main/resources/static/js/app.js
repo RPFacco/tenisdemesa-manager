@@ -4,38 +4,22 @@
   var prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   function initTheme() {
-    var savedTheme = localStorage.getItem('theme-preference');
-    if (savedTheme === 'dark') {
-      document.documentElement.setAttribute('data-theme', 'dark');
-    } else if (savedTheme === 'light') {
-      document.documentElement.setAttribute('data-theme', 'light');
-    }
-
     var toggleBtns = document.querySelectorAll('.theme-toggle');
-    if (toggleBtns.length) {
-      toggleBtns.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-          var html = document.documentElement;
-          var current = html.getAttribute('data-theme');
-          if (current === 'dark') {
-            html.setAttribute('data-theme', 'light');
-            localStorage.setItem('theme-preference', 'light');
-            toggleBtns.forEach(function (b) { b.innerHTML = '<i class="bi bi-moon-stars"></i>'; });
-          } else {
-            html.setAttribute('data-theme', 'dark');
-            localStorage.setItem('theme-preference', 'dark');
-            toggleBtns.forEach(function (b) { b.innerHTML = '<i class="bi bi-sun"></i>'; });
-          }
-        });
-      });
+    if (!toggleBtns.length) return;
 
-      var currentTheme = document.documentElement.getAttribute('data-theme');
-      toggleBtns.forEach(function (btn) {
-        btn.innerHTML = currentTheme === 'dark'
-          ? '<i class="bi bi-sun"></i>'
-          : '<i class="bi bi-moon-stars"></i>';
+    toggleBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var html = document.documentElement;
+        var current = html.getAttribute('data-theme');
+        if (current === 'dark') {
+          html.setAttribute('data-theme', 'light');
+          localStorage.setItem('theme-preference', 'light');
+        } else {
+          html.setAttribute('data-theme', 'dark');
+          localStorage.setItem('theme-preference', 'dark');
+        }
       });
-    }
+    });
   }
 
   function initScrollAnimations() {
@@ -191,6 +175,53 @@
     });
   }
 
+  function adicionarSet() {
+    var container = document.getElementById('sets-container');
+    if (!container) return false;
+    var count = container.querySelectorAll('.set-row').length;
+    var row = document.createElement('div');
+    row.className = 'row mb-2 set-row';
+    row.innerHTML = '<div class="col-md-4">' +
+      '<label class="form-label">Pontos Atleta</label>' +
+      '<input type="number" name="sets[' + count + '].pontosAtleta" class="form-control" min="0" required>' +
+      '</div>' +
+      '<div class="col-md-4">' +
+      '<label class="form-label">Pontos Adversário</label>' +
+      '<input type="number" name="sets[' + count + '].pontosAdversario" class="form-control" min="0" required>' +
+      '</div>' +
+      '<div class="col-md-4 d-flex align-items-end mb-3">' +
+      '<button type="button" class="btn btn-outline-danger btn-sm remover-set"><i class="bi bi-dash-circle"></i> Remover</button>' +
+      '</div>';
+    container.appendChild(row);
+    return false;
+  }
+
+  function initSetsManager() {
+    var container = document.getElementById('sets-container');
+    if (!container) return;
+
+    container.addEventListener('click', function (e) {
+      var btn = e.target.closest('.remover-set');
+      if (!btn) return;
+      var row = btn.closest('.set-row');
+      if (container.querySelectorAll('.set-row').length > 1) {
+        row.remove();
+        reindexSets(container);
+      } else {
+        alert('É necessário pelo menos 1 set.');
+      }
+    });
+  }
+
+  function reindexSets(container) {
+    var rows = container.querySelectorAll('.set-row');
+    rows.forEach(function (row, index) {
+      row.querySelectorAll('input').forEach(function (input) {
+        input.name = input.name.replace(/sets\[\d+\]/, 'sets[' + index + ']');
+      });
+    });
+  }
+
   document.addEventListener('DOMContentLoaded', function () {
     initTheme();
     initScrollAnimations();
@@ -199,6 +230,7 @@
     initNavbarScroll();
     initCard3D();
     initFloatingLabels();
+    initSetsManager();
   });
 
   document.addEventListener('htmx:afterSwap', function (evt) {

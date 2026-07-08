@@ -10,7 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(indexes = @Index(name = "idx_partida_data", columnList = "data"))
+@Table(indexes = {
+    @Index(name = "idx_partida_data", columnList = "data"),
+    @Index(name = "idx_partida_campeonato", columnList = "campeonato_id")
+})
 public class Partida {
 
     @Id
@@ -55,6 +58,16 @@ public class Partida {
                 .count();
         long setsPerdidos = sets.size() - setsVencidos;
         return setsVencidos + "-" + setsPerdidos;
+    }
+
+    @Transient
+    public boolean isVitoria() {
+        return getResultado() == ResultadoPartida.VITORIA;
+    }
+
+    @Transient
+    public boolean isDerrota() {
+        return getResultado() == ResultadoPartida.DERROTA;
     }
 
     public Partida() {}

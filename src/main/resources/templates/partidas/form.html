@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </div>
-                <button type="button" id="adicionar-set" class="btn btn-outline-primary btn-sm mb-3"><i class="bi bi-plus-circle"></i> Adicionar Set</button>
+                <button type="button" id="adicionar-set" class="btn btn-outline-primary btn-sm mb-3" onclick="return adicionarSet()"><i class="bi bi-plus-circle"></i> Adicionar Set</button>
 
                 <div class="d-flex justify-content-between">
                     <a th:href="@{/campeonatos/{id}(id=${partida.campeonato.id})}" class="btn btn-outline-secondary btn-action">Cancelar</a>
@@ -64,45 +64,7 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            var container = document.getElementById('sets-container');
-            var addBtn = document.getElementById('adicionar-set');
-            var setIndex = container.children.length;
 
-            addBtn.addEventListener('click', function () {
-                var row = document.createElement('div');
-                row.className = 'row mb-2 set-row';
-                row.innerHTML = `
-                    <div class="col-md-4">
-                        <label class="form-label">Pontos Atleta</label>
-                        <input type="number" name="sets[` + setIndex + `].pontosAtleta" class="form-control" min="0" required>
-                    </div>
-                    <div class="col-md-4">
-                        <label class="form-label">Pontos Adversário</label>
-                        <input type="number" name="sets[` + setIndex + `].pontosAdversario" class="form-control" min="0" required>
-                    </div>
-                    <div class="col-md-4 d-flex align-items-end mb-3">
-                        <button type="button" class="btn btn-outline-danger btn-sm remover-set"><i class="bi bi-dash-circle"></i> Remover</button>
-                    </div>
-                `;
-                container.appendChild(row);
-                setIndex++;
-            });
-
-            container.addEventListener('click', function (e) {
-                if (e.target.classList.contains('remover-set') || e.target.closest('.remover-set')) {
-                    var btn = e.target.classList.contains('remover-set') ? e.target : e.target.closest('.remover-set');
-                    var row = btn.closest('.set-row');
-                    if (container.querySelectorAll('.set-row').length > 1) {
-                        row.remove();
-                    } else {
-                        alert('É necessário pelo menos 1 set.');
-                    }
-                }
-            });
-        });
-    </script>
 </section>
 </body>
 </html>

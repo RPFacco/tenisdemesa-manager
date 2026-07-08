@@ -5,23 +5,7 @@
 <body>
 <section layout:fragment="content">
 
-    <div class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2 animate-on-scroll">
-        <h2 class="mb-0"><i class="bi bi-bar-chart"></i> Estatísticas Gerais</h2>
-        <div class="btn-group btn-group-sm flex-wrap" role="group">
-            <a th:href="@{/geral(periodo='ano')}"
-               hx-get="/geral?periodo=ano" hx-target="#estatisticas-container" hx-swap="outerHTML"
-               class="btn btn-sm"
-               th:classappend="${periodo == 'ano' or periodo == null} ? 'btn-primary' : 'btn-outline-primary'">Ano</a>
-            <a th:href="@{/geral(periodo='30d')}"
-               hx-get="/geral?periodo=30d" hx-target="#estatisticas-container" hx-swap="outerHTML"
-               class="btn btn-sm"
-               th:classappend="${periodo == '30d'} ? 'btn-primary' : 'btn-outline-primary'">30 dias</a>
-            <a th:href="@{/geral(periodo='todos')}"
-               hx-get="/geral?periodo=todos" hx-target="#estatisticas-container" hx-swap="outerHTML"
-               class="btn btn-sm"
-               th:classappend="${periodo == 'todos'} ? 'btn-primary' : 'btn-outline-primary'">Todos</a>
-        </div>
-    </div>
+    <div th:replace="geral :: periodo-filtro"></div>
 
     <div id="estatisticas-container">
         <div th:replace="geral :: estatisticas-cards"></div>
@@ -205,7 +189,44 @@
     </div>
 </div>
 
+<div th:fragment="periodo-filtro">
+    <div id="periodo-header" class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2">
+        <h2 class="mb-0"><i class="bi bi-bar-chart"></i> Estatísticas Gerais</h2>
+        <div id="periodo-filtro" class="btn-group btn-group-sm flex-wrap" role="group">
+            <a th:href="@{/geral(periodo='ano')}"
+               hx-get="/geral?periodo=ano" hx-target="#estatisticas-container" hx-swap="outerHTML"
+               class="btn btn-sm"
+               th:classappend="${periodo == 'ano' or periodo == null} ? 'btn-primary' : 'btn-outline-primary'">Ano</a>
+            <a th:href="@{/geral(periodo='30d')}"
+               hx-get="/geral?periodo=30d" hx-target="#estatisticas-container" hx-swap="outerHTML"
+               class="btn btn-sm"
+               th:classappend="${periodo == '30d'} ? 'btn-primary' : 'btn-outline-primary'">30 dias</a>
+            <a th:href="@{/geral(periodo='todos')}"
+               hx-get="/geral?periodo=todos" hx-target="#estatisticas-container" hx-swap="outerHTML"
+               class="btn btn-sm"
+               th:classappend="${periodo == 'todos'} ? 'btn-primary' : 'btn-outline-primary'">Todos</a>
+        </div>
+    </div>
+</div>
+
 <div th:fragment="estatisticas">
+    <div id="periodo-header" class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2" hx-swap-oob="true">
+        <h2 class="mb-0"><i class="bi bi-bar-chart"></i> Estatísticas Gerais</h2>
+        <div id="periodo-filtro" class="btn-group btn-group-sm flex-wrap" role="group">
+            <a th:href="@{/geral(periodo='ano')}"
+               hx-get="/geral?periodo=ano" hx-target="#estatisticas-container" hx-swap="outerHTML"
+               class="btn btn-sm"
+               th:classappend="${periodo == 'ano' or periodo == null} ? 'btn-primary' : 'btn-outline-primary'">Ano</a>
+            <a th:href="@{/geral(periodo='30d')}"
+               hx-get="/geral?periodo=30d" hx-target="#estatisticas-container" hx-swap="outerHTML"
+               class="btn btn-sm"
+               th:classappend="${periodo == '30d'} ? 'btn-primary' : 'btn-outline-primary'">30 dias</a>
+            <a th:href="@{/geral(periodo='todos')}"
+               hx-get="/geral?periodo=todos" hx-target="#estatisticas-container" hx-swap="outerHTML"
+               class="btn btn-sm"
+               th:classappend="${periodo == 'todos'} ? 'btn-primary' : 'btn-outline-primary'">Todos</a>
+        </div>
+    </div>
     <div id="estatisticas-container">
         <div th:replace="geral :: estatisticas-cards"></div>
         <div th:replace="geral :: campeonato-atual"></div>

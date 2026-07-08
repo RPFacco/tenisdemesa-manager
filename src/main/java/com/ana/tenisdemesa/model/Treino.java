@@ -37,6 +37,10 @@ public class Treino {
     public void setData(LocalDate data) { this.data = data; }
     public Double getDuracaoHoras() { return duracaoHoras; }
     public void setDuracaoHoras(Double duracaoHoras) { this.duracaoHoras = duracaoHoras; }
+
+    public void setDuracaoPorHorasEMinutos(Integer horas, Integer minutos) {
+        this.duracaoHoras = horas + minutos / 60.0;
+    }
     public TipoTreino getTipo() { return tipo; }
     public void setTipo(TipoTreino tipo) { this.tipo = tipo; }
 }

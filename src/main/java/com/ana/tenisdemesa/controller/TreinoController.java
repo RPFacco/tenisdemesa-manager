@@ -40,7 +40,7 @@ public class TreinoController {
                          @RequestParam(defaultValue = "0") Integer horas,
                          @RequestParam(defaultValue = "0") Integer minutos,
                          RedirectAttributes redirect) {
-        treino.setDuracaoHoras(horas + minutos / 60.0);
+        treino.setDuracaoPorHorasEMinutos(horas, minutos);
         service.salvar(treino);
         redirect.addFlashAttribute("mensagem", "Treino salvo com sucesso!");
         return "redirect:/treinos";

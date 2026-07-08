@@ -54,7 +54,7 @@ public class TreinoService {
         return buildResumo(treinosMes);
     }
 
-    private Map<String, Object> buildResumo(List<Treino> treinos) {
+    Map<String, Object> buildResumo(List<Treino> treinos) {
         double total = treinos.stream().mapToDouble(Treino::getDuracaoHoras).sum();
         Map<TipoTreino, Double> breakdown = treinos.stream()
                 .collect(Collectors.groupingBy(

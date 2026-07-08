@@ -1,7 +1,6 @@
 package com.ana.tenisdemesa.service;
 
 import com.ana.tenisdemesa.model.Partida;
-import com.ana.tenisdemesa.model.enums.ResultadoPartida;
 import com.ana.tenisdemesa.model.enums.TipoMedalha;
 import com.ana.tenisdemesa.repository.CampeonatoRepository;
 import com.ana.tenisdemesa.repository.MedalhaRepository;
@@ -9,6 +8,7 @@ import com.ana.tenisdemesa.repository.PartidaRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class EstatisticaService {
@@ -28,25 +28,33 @@ public class EstatisticaService {
     }
 
     public long totalVitorias() {
-        return totalVitorias(null, null);
+        return contarPorResultado(null, true);
     }
 
     public long totalVitorias(LocalDate inicio, LocalDate fim) {
-        if (inicio != null && fim != null) {
-            return partidaRepository.countByResultadoAndDataBetween(ResultadoPartida.VITORIA, inicio, fim);
-        }
-        return partidaRepository.countByResultado(ResultadoPartida.VITORIA);
+        return contarPorResultadoPeriodo(inicio, fim, true);
     }
 
     public long totalDerrotas() {
-        return totalDerrotas(null, null);
+        return contarPorResultado(null, false);
     }
 
     public long totalDerrotas(LocalDate inicio, LocalDate fim) {
-        if (inicio != null && fim != null) {
-            return partidaRepository.countByResultadoAndDataBetween(ResultadoPartida.DERROTA, inicio, fim);
-        }
-        return partidaRepository.countByResultado(ResultadoPartida.DERROTA);
+        return contarPorResultadoPeriodo(inicio, fim, false);
+    }
+
+    private long contarPorResultadoPeriodo(LocalDate inicio, LocalDate fim, boolean vitoria) {
+        if (inicio == null || fim == null) return contarPorResultado(null, vitoria);
+        return partidaRepository.findByDataBetween(inicio, fim).stream()
+                .filter(vitoria ? Partida::isVitoria : Partida::isDerrota)
+                .count();
+    }
+
+    private long contarPorResultado(LocalDate inicioFim, boolean vitoria) {
+        List<Partida> todas = partidaRepository.findAll();
+        return vitoria
+                ? todas.stream().filter(Partida::isVitoria).count()
+                : todas.stream().filter(Partida::isDerrota).count();
     }
 
     public String taxaVitoria() {
@@ -83,23 +91,25 @@ public class EstatisticaService {
         if (inicio != null && fim != null) {
             ordenadas = partidaRepository.findByDataBetweenOrderByDataDesc(inicio, fim);
         } else {
-            ordenadas = partidaRepository.findAll();
-            ordenadas.sort(Comparator.comparing(Partida::getData).reversed());
+            ordenadas = partidaRepository.findAllByOrderByDataDesc();
         }
         if (ordenadas.isEmpty()) return "—";
 
-        ResultadoPartida primeiro = ordenadas.get(0).getResultado();
-        if (primeiro == null) return "—";
+        Partida primeira = ordenadas.get(0);
+        if (primeira.getResultado() == null) return "—";
+        boolean ehVitoria = primeira.isVitoria();
 
         long count = 1;
         for (int i = 1; i < ordenadas.size(); i++) {
-            if (ordenadas.get(i).getResultado() == primeiro) {
+            Partida p = ordenadas.get(i);
+            if (p.getResultado() == null) break;
+            if (ehVitoria ? p.isVitoria() : p.isDerrota()) {
                 count++;
             } else {
                 break;
             }
         }
-        String label = primeiro == ResultadoPartida.VITORIA ? "V" : "D";
+        String label = ehVitoria ? "V" : "D";
         return count + label;
     }
 }

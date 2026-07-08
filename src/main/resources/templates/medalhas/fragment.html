@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<th:block th:fragment="medalha-badge(medalha)">
+    <i class="medal-icon bi"
+       th:classappend="${medalha.tipoCssClass}"
+       th:style="${medalha.tipoColorStyle}"></i>
+    <span th:text="${medalha.tipoLabel}"
+          th:classappend="${medalha.ouro ? 'fw-bold text-warning' : medalha.prata ? 'fw-bold text-secondary' : 'fw-bold'}"
+          th:style="${medalha.tipoColorStyle}"></span>
+</th:block>
+
+<th:block th:fragment="medalha-icon(medalha)">
+    <i th:if="${medalha.ouro}" class="bi bi-star-fill text-warning medal-icon"></i>
+    <i th:if="${medalha.prata}" class="bi bi-star-fill text-secondary medal-icon"></i>
+    <i th:if="${medalha.bronze}" class="bi bi-star-fill medal-icon" style="color: #cd7f32"></i>
+</th:block>
+</body>
+</html>

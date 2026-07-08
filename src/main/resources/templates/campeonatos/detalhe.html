@@ -84,8 +84,8 @@
                                 </span>
                             </td>
                             <td>
-                                <span th:if="${p.resultado != null and p.resultado.name() == 'VITORIA'}" class="badge bg-success">VITÓRIA</span>
-                                <span th:if="${p.resultado != null and p.resultado.name() == 'DERROTA'}" class="badge bg-danger">DERROTA</span>
+                                <span th:if="${p.vitoria}" class="badge bg-success">VITÓRIA</span>
+                                <span th:if="${p.derrota}" class="badge bg-danger">DERROTA</span>
                             </td>
                             <td>
                                 <a th:if="${p.linkYoutube != null and !p.linkYoutube.isEmpty()}" th:href="${p.linkYoutube}" target="_blank" class="btn btn-sm btn-outline-danger btn-action"><i class="bi bi-youtube"></i></a>
@@ -109,8 +109,8 @@
                             <span class="fw-semibold" th:text="${p.adversario}"></span>
                             <span class="text-muted small ms-2" th:text="${#temporals.format(p.data, 'dd/MM/yyyy')}"></span>
                         </div>
-                        <span th:if="${p.resultado != null and p.resultado.name() == 'VITORIA'}" class="badge bg-success">VITÓRIA</span>
-                        <span th:if="${p.resultado != null and p.resultado.name() == 'DERROTA'}" class="badge bg-danger">DERROTA</span>
+                        <span th:if="${p.vitoria}" class="badge bg-success">VITÓRIA</span>
+                        <span th:if="${p.derrota}" class="badge bg-danger">DERROTA</span>
                     </div>
                     <div class="small text-muted mb-1">
                         <span th:text="${p.fase != null ? p.fase.name().replace('_', ' ') : '—'}"></span>
@@ -157,14 +157,7 @@
                     <tbody>
                         <tr th:each="m : ${campeonato.medalhas}">
                             <td>
-                                <i class="medal-icon bi"
-                                   th:classappend="${m.tipo.name() == 'OURO' ? 'bi-star-fill text-warning' : 
-                                                          m.tipo.name() == 'PRATA' ? 'bi-star-fill text-secondary' : 
-                                                          'bi-star-fill'}"
-                                   th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
-                                <span th:text="${m.tipo.name()}"
-                                      th:classappend="${m.tipo.name() == 'OURO' ? 'fw-bold text-warning' : m.tipo.name() == 'PRATA' ? 'fw-bold text-secondary' : 'fw-bold'}"
-                                      th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></span>
+                                <th:block th:replace="~{medalhas/fragment :: medalha-badge(medalha=${m})}"></th:block>
                             </td>
                             <td th:text="${m.modalidade.name().replace('_', ' ')}"></td>
                             <td>
@@ -180,15 +173,7 @@
             <div th:unless="${#lists.isEmpty(campeonato.medalhas)}" class="d-md-none">
                 <div th:each="m : ${campeonato.medalhas}" class="border-bottom p-3 d-flex justify-content-between align-items-center">
                     <div>
-                        <i class="medal-icon bi"
-                           th:classappend="${m.tipo.name() == 'OURO' ? 'bi-star-fill text-warning' : 
-                                                   m.tipo.name() == 'PRATA' ? 'bi-star-fill text-secondary' : 
-                                                   'bi-star-fill'}"
-                           th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
-                        <span class="fw-semibold ms-1"
-                              th:classappend="${m.tipo.name() == 'OURO' ? 'text-warning' : m.tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
-                              th:style="${m.tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"
-                              th:text="${m.tipo.name()}"></span>
+                        <th:block th:replace="~{medalhas/fragment :: medalha-badge(medalha=${m})}"></th:block>
                         <span class="text-muted ms-2" th:text="${m.modalidade.name().replace('_', ' ')}"></span>
                     </div>
                     <form th:action="@{/campeonatos/{cid}/medalhas/{mid}/excluir(cid=${campeonato.id}, mid=${m.id})}" method="post" style="display:inline"
@@ -200,7 +185,7 @@
         </div>
     </div>
 
-    <a href="/campeonatos" class="btn btn-outline-secondary mt-3"><i class="bi bi-arrow-left"></i> Voltar</a>
+    <a th:href="@{/campeonatos}" class="btn btn-outline-secondary mt-3"><i class="bi bi-arrow-left"></i> Voltar</a>
 </section>
 </body>
 </html>

@@ -1,10 +1,12 @@
 package com.ana.tenisdemesa.service;
 
+import com.ana.tenisdemesa.exception.NotFoundException;
 import com.ana.tenisdemesa.model.Campeonato;
 import com.ana.tenisdemesa.model.Partida;
 import com.ana.tenisdemesa.repository.CampeonatoRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -22,7 +24,7 @@ public class CampeonatoService {
     }
 
     public Campeonato buscarPorId(Long id) {
-        return repository.findById(id).orElseThrow(() -> new RuntimeException("Campeonato não encontrado"));
+        return repository.findById(id).orElseThrow(() -> new NotFoundException("Campeonato não encontrado"));
     }
 
     public Campeonato salvar(Campeonato campeonato) {
@@ -47,5 +49,30 @@ public class CampeonatoService {
                 .filter(p -> p.getResultado() != null)
                 .count();
         return Map.of("total", total, "realizadas", realizadas);
+    }
+
+    public Map<String, Object> calcularEstatisticas(Campeonato campeonato) {
+        List<Partida> partidas = campeonato.getPartidas();
+        long vitorias = partidas.stream()
+                .filter(p -> p.isVitoria())
+                .count();
+        long derrotas = partidas.stream()
+                .filter(p -> p.isDerrota())
+                .count();
+        String taxa = (vitorias + derrotas) > 0
+                ? Math.round((double) vitorias / (vitorias + derrotas) * 100) + "%"
+                : "—";
+        Map<String, Object> stats = new LinkedHashMap<>();
+        stats.put("vitorias", vitorias);
+        stats.put("derrotas", derrotas);
+        stats.put("taxaVitoria", taxa);
+        return stats;
+    }
+
+    public void validarDatas(Campeonato campeonato, org.springframework.validation.BindingResult result) {
+        if (campeonato.getDataFim() != null && campeonato.getDataInicio() != null
+                && campeonato.getDataFim().isBefore(campeonato.getDataInicio())) {
+            result.rejectValue("dataFim", "", "Data fim deve ser maior ou igual à data início");
+        }
     }
 }
