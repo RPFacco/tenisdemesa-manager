@@ -10,4 +10,12 @@ public interface CampeonatoRepository extends JpaRepository<Campeonato, Long> {
 
     List<Campeonato> findByDataFimGreaterThanEqualOrderByDataInicioDesc(LocalDate data);
     Optional<Campeonato> findTopByOrderByDataFimDesc();
+
+    List<Campeonato> findAllByOrderByDataInicioDesc();
+
+    Optional<Campeonato> findFirstByDataInicioLessThanEqualAndDataFimGreaterThanEqualOrderByDataInicioDesc(LocalDate dataInicio, LocalDate dataFim);
+
+    Optional<Campeonato> findFirstByDataInicioGreaterThanEqualOrderByDataInicioAsc(LocalDate data);
+
+    Optional<Campeonato> findFirstByDataInicioLessThanEqualOrderByDataInicioDesc(LocalDate data);
 }

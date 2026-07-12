@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class CampeonatoService {
@@ -20,7 +21,7 @@ public class CampeonatoService {
     }
 
     public List<Campeonato> listar() {
-        return repository.findAll();
+        return repository.findAllByOrderByDataInicioDesc();
     }
 
     public Campeonato buscarPorId(Long id) {
@@ -37,9 +38,19 @@ public class CampeonatoService {
 
     public Campeonato buscarAtual() {
         LocalDate hoje = LocalDate.now();
-        List<Campeonato> emAndamento = repository.findByDataFimGreaterThanEqualOrderByDataInicioDesc(hoje);
-        if (!emAndamento.isEmpty()) return emAndamento.get(0);
-        return repository.findTopByOrderByDataFimDesc().orElse(null);
+
+        // Prioridade 1: Campeonato em andamento (dataInicio ≤ hoje ≤ dataFim)
+        Optional<Campeonato> emAndamento = repository
+                .findFirstByDataInicioLessThanEqualAndDataFimGreaterThanEqualOrderByDataInicioDesc(hoje, hoje);
+        if (emAndamento.isPresent()) return emAndamento.get();
+
+        // Prioridade 2: Próximo campeonato futuro (dataInicio > hoje)
+        Optional<Campeonato> proximoFuturo = repository
+                .findFirstByDataInicioGreaterThanEqualOrderByDataInicioAsc(hoje);
+        if (proximoFuturo.isPresent()) return proximoFuturo.get();
+
+        // Prioridade 3: Campeonato mais recente do passado (dataInicio ≤ hoje)
+        return repository.findFirstByDataInicioLessThanEqualOrderByDataInicioDesc(hoje).orElse(null);
     }
 
     public Map<String, Long> calcularProgresso(Campeonato campeonato) {
