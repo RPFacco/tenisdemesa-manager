@@ -44,18 +44,13 @@ public class SecurityConfig {
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                 .requestMatchers("/actuator/**").permitAll()
-                .requestMatchers("/login", "/logout").permitAll()
                 .anyRequest().authenticated()
             )
             .formLogin(form -> form.permitAll())
             .rememberMe(remember -> remember
                     .tokenValiditySeconds(60 * 60 * 24 * 30)
             )
-            .logout(logout -> logout.permitAll())
-            .exceptionHandling(ex -> ex
-                    .authenticationEntryPoint(new HtmxAwareAuthenticationEntryPoint())
-            )
-            .addFilterBefore(new HtmxAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+            .logout(logout -> logout.permitAll());
         return http.build();
     }
 }
