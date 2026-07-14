@@ -4,16 +4,16 @@
 <head><title th:text="${campeonato.nome} + ' - Painel de Tênis de Mesa'"></title></head>
 <body>
 <section layout:fragment="content">
-    <div class="d-flex justify-content-between align-items-center mt-4 animate-on-scroll">
+    <div class="page-header d-flex flex-wrap justify-content-between align-items-start gap-2 mt-3 mt-md-4">
         <div>
-            <h2><i class="bi bi-trophy"></i> <span th:text="${campeonato.nome}"></span></h2>
-            <p class="text-muted">
+            <h2 class="mb-1"><i class="bi bi-trophy"></i> <span th:text="${campeonato.nome}"></span></h2>
+            <p class="text-muted mb-0">
                 <i class="bi bi-geo-alt"></i> <span th:text="${campeonato.local}"></span>
                 &middot; <span th:text="${#temporals.format(campeonato.dataInicio, 'dd/MM/yyyy')} + ' a ' + ${#temporals.format(campeonato.dataFim, 'dd/MM/yyyy')}"></span>
                 <span th:if="${campeonato.categoria}" th:text="|&middot; ${campeonato.categoria}|"></span>
             </p>
         </div>
-        <div>
+        <div class="d-flex gap-2">
             <a th:href="@{/campeonatos/{id}/editar(id=${campeonato.id})}" class="btn btn-outline-secondary btn-sm"><i class="bi bi-pencil"></i> Editar</a>
             <form th:action="@{/campeonatos/{id}/excluir(id=${campeonato.id})}" method="post" style="display:inline"
                   onsubmit="return confirm('Excluir este campeonato? Todas as partidas e medalhas serão removidas.');">
@@ -22,34 +22,34 @@
         </div>
     </div>
 
-    <div class="row mt-3 stagger-children">
-        <div class="col-md-4 mb-3">
-            <div class="card card-gradient-success text-center card-3d">
-                <div class="card-body py-4">
-                    <h5>Vitórias</h5>
-                    <span class="stat-value animate-counter" th:text="${vitorias}">0</span>
+    <div class="row g-2 g-md-3 mt-1">
+        <div class="col-4">
+            <div class="stat-tile stat-tile-success">
+                <div class="card-body py-3 py-md-4">
+                    <div class="stat-label">Vitórias</div>
+                    <span class="stat-value" th:text="${vitorias}">0</span>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-3">
-            <div class="card card-gradient-danger text-center card-3d">
-                <div class="card-body py-4">
-                    <h5>Derrotas</h5>
-                    <span class="stat-value animate-counter" th:text="${derrotas}">0</span>
+        <div class="col-4">
+            <div class="stat-tile stat-tile-danger">
+                <div class="card-body py-3 py-md-4">
+                    <div class="stat-label">Derrotas</div>
+                    <span class="stat-value" th:text="${derrotas}">0</span>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 mb-3">
-            <div class="card card-gradient-info text-center card-3d">
-                <div class="card-body py-4">
-                    <h5>Taxa de Vitória</h5>
-                    <span class="stat-value" th:text="${taxaVitoria}">—</span>
+        <div class="col-4">
+            <div class="stat-tile stat-tile-info">
+                <div class="card-body py-3 py-md-4">
+                    <div class="stat-label">Taxa de Vitória</div>
+                    <span class="stat-value small" th:text="${taxaVitoria}">—</span>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="card card-elevated mt-4 animate-on-scroll">
+    <div class="card card-elevated mt-4">
         <div class="card-header card-header-clean d-flex justify-content-between align-items-center">
             <h3 class="mb-0"><i class="bi bi-list-check"></i> Partidas</h3>
             <a th:href="@{/campeonatos/{id}/partidas/nova(id=${campeonato.id})}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Nova Partida</a>
@@ -78,14 +78,11 @@
                             <td class="fw-semibold" th:text="${p.adversario}"></td>
                             <td th:text="${p.fase != null ? p.fase.name().replace('_', ' ') : '—'}"></td>
                             <td>
-                                <span th:each="set, iter : ${p.sets}">
-                                    <span class="badge bg-light text-dark" th:text="${set.pontosAtleta + '-' + set.pontosAdversario}"></span>
-                                    <span th:unless="${iter.last}"> </span>
-                                </span>
+                                <span th:each="set, iter : ${p.sets}" th:text="${set.pontosAtleta + '-' + set.pontosAdversario}" class="scorechip"></span>
                             </td>
                             <td>
-                                <span th:if="${p.vitoria}" class="badge bg-success">VITÓRIA</span>
-                                <span th:if="${p.derrota}" class="badge bg-danger">DERROTA</span>
+                                <span th:if="${p.vitoria}" class="badge bg-success">Vitória</span>
+                                <span th:if="${p.derrota}" class="badge bg-danger">Derrota</span>
                             </td>
                             <td>
                                 <a th:if="${p.linkYoutube != null and !p.linkYoutube.isEmpty()}" th:href="${p.linkYoutube}" target="_blank" class="btn btn-sm btn-outline-danger btn-action"><i class="bi bi-youtube"></i></a>
@@ -109,17 +106,13 @@
                             <span class="fw-semibold" th:text="${p.adversario}"></span>
                             <span class="text-muted small ms-2" th:text="${#temporals.format(p.data, 'dd/MM/yyyy')}"></span>
                         </div>
-                        <span th:if="${p.vitoria}" class="badge bg-success">VITÓRIA</span>
-                        <span th:if="${p.derrota}" class="badge bg-danger">DERROTA</span>
+                        <span th:if="${p.vitoria}" class="badge bg-success">Vitória</span>
+                        <span th:if="${p.derrota}" class="badge bg-danger">Derrota</span>
                     </div>
-                    <div class="small text-muted mb-1">
+                    <div class="small text-muted mb-1 d-flex align-items-center flex-wrap gap-1">
                         <span th:text="${p.fase != null ? p.fase.name().replace('_', ' ') : '—'}"></span>
-                        <span th:if="${not #lists.isEmpty(p.sets)}" class="ms-2">
-                            Sets:
-                            <span th:each="set, iter : ${p.sets}">
-                                <span class="badge bg-light text-dark" th:text="${set.pontosAtleta + '-' + set.pontosAdversario}"></span>
-                                <span th:unless="${iter.last}"> </span>
-                            </span>
+                        <span th:if="${not #lists.isEmpty(p.sets)}" class="d-flex align-items-center flex-wrap gap-1 ms-1">
+                            <span th:each="set, iter : ${p.sets}" th:text="${set.pontosAtleta + '-' + set.pontosAdversario}" class="scorechip"></span>
                         </span>
                     </div>
                     <div class="d-flex gap-2 mt-2">
@@ -135,7 +128,7 @@
         </div>
     </div>
 
-    <div class="card card-elevated mt-4 animate-on-scroll">
+    <div class="card card-elevated mt-4">
         <div class="card-header card-header-clean d-flex justify-content-between align-items-center">
             <h3 class="mb-0"><i class="bi bi-stars"></i> Medalhas</h3>
             <a th:href="@{/campeonatos/{id}/medalhas/nova(id=${campeonato.id})}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Nova Medalha</a>

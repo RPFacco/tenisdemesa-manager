@@ -13,9 +13,9 @@
         <div th:replace="~{geral :: medalhas}"></div>
     </div>
 
-    <div class="row mb-4">
-        <div class="col-md-6 mb-4 mb-md-0">
-            <div class="card card-elevated h-100 animate-on-scroll">
+    <div class="row mb-4 g-3">
+        <div class="col-12 col-md-6">
+            <div class="card card-elevated h-100">
                 <div class="card-header card-header-clean">
                     <h5 class="mb-0"><i class="bi bi-list-check"></i> Últimas Partidas</h5>
                 </div>
@@ -26,23 +26,23 @@
                         <a th:href="@{/campeonatos}" class="btn btn-outline-primary btn-sm">Ver campeonatos</a>
                     </div>
                     <ul th:unless="${#lists.isEmpty(ultimasPartidas)}" class="list-group list-group-flush">
-                        <li th:each="p : ${ultimasPartidas}" class="list-group-item d-flex justify-content-between align-items-center py-2">
-                            <div>
-                                <span class="badge bg-light text-dark me-2" th:text="${#temporals.format(p.data, 'dd/MM')}">12/06</span>
+                        <li th:each="p : ${ultimasPartidas}" class="list-group-item d-flex justify-content-between align-items-center gap-2 py-2">
+                            <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <span class="scorechip" th:text="${#temporals.format(p.data, 'dd/MM')}">12/06</span>
                                 <span class="fw-semibold" th:text="${p.adversario}">Adversário</span>
-                                <span class="badge bg-light text-dark ms-1" th:text="${p.placar}">3-1</span>
-                                <span class="text-muted small ms-2" th:text="'(' + ${p.campeonato.nome} + ')'"></span>
+                                <span class="scorechip" th:text="${p.placar}">3-1</span>
+                                <span class="text-muted small" th:text="'(' + ${p.campeonato.nome} + ')'"></span>
                             </div>
-                            <span th:if="${p.resultado != null and p.resultado.name() == 'VITORIA'}" class="badge bg-success">VITÓRIA</span>
-                            <span th:if="${p.resultado != null and p.resultado.name() == 'DERROTA'}" class="badge bg-danger">DERROTA</span>
+                            <span th:if="${p.resultado != null and p.resultado.name() == 'VITORIA'}" class="badge bg-success">Vitória</span>
+                            <span th:if="${p.resultado != null and p.resultado.name() == 'DERROTA'}" class="badge bg-danger">Derrota</span>
                         </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        <div class="col-md-6">
-            <div class="card card-elevated h-100 animate-on-scroll">
+        <div class="col-12 col-md-6">
+            <div class="card card-elevated h-100">
                 <div class="card-header card-header-clean">
                     <h5 class="mb-0"><i class="bi bi-clock"></i> Últimos Treinos</h5>
                 </div>
@@ -54,8 +54,8 @@
                     </div>
                     <ul th:unless="${#lists.isEmpty(ultimosTreinos)}" class="list-group list-group-flush">
                         <li th:each="t : ${ultimosTreinos}" class="list-group-item d-flex justify-content-between align-items-center py-2">
-                            <div>
-                                <span class="badge bg-light text-dark me-2" th:text="${#temporals.format(t.data, 'dd/MM')}">11/06</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="scorechip" th:text="${#temporals.format(t.data, 'dd/MM')}">11/06</span>
                                 <span th:text="${t.tipo.name()}">Técnica</span>
                             </div>
                             <span class="text-muted small" th:text="${@treinoHelper.formatDuracao(t.duracaoHoras)}">45min</span>
@@ -69,36 +69,36 @@
 </section>
 
 <div th:fragment="estatisticas-cards">
-    <div class="row stagger-children">
-        <div class="col-6 col-md-3 mb-3">
-            <div class="card card-gradient-success text-center h-100 card-3d">
-                <div class="card-body py-4">
-                    <h5><i class="bi bi-trophy"></i> Vitórias</h5>
-                    <p class="stat-value animate-counter mb-0" th:text="${totalVitorias}">0</p>
+    <div class="row g-2 g-md-3 mb-1">
+        <div class="col-6 col-md-3">
+            <div class="stat-tile stat-tile-success">
+                <div class="card-body py-3 py-md-4">
+                    <div class="stat-label"><i class="bi bi-trophy stat-icon"></i> Vitórias</div>
+                    <p class="stat-value mb-0" th:text="${totalVitorias}">0</p>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3 mb-3">
-            <div class="card card-gradient-danger text-center h-100 card-3d">
-                <div class="card-body py-4">
-                    <h5><i class="bi bi-x-circle"></i> Derrotas</h5>
-                    <p class="stat-value animate-counter mb-0" th:text="${totalDerrotas}">0</p>
+        <div class="col-6 col-md-3">
+            <div class="stat-tile stat-tile-danger">
+                <div class="card-body py-3 py-md-4">
+                    <div class="stat-label"><i class="bi bi-x-circle stat-icon"></i> Derrotas</div>
+                    <p class="stat-value mb-0" th:text="${totalDerrotas}">0</p>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3 mb-3">
-            <div class="card card-gradient-info text-center h-100 card-3d">
-                <div class="card-body py-4">
-                    <h5><i class="bi bi-pie-chart"></i> Taxa de Vitória</h5>
+        <div class="col-6 col-md-3">
+            <div class="stat-tile stat-tile-info">
+                <div class="card-body py-3 py-md-4">
+                    <div class="stat-label"><i class="bi bi-pie-chart stat-icon"></i> Taxa de Vitória</div>
                     <p class="stat-value mb-0" th:text="${taxaVitoria}">—</p>
                 </div>
             </div>
         </div>
-        <div class="col-6 col-md-3 mb-3">
-            <div class="card card-gradient-warning text-center h-100 card-3d">
-                <div class="card-body py-4">
-                    <h5><i class="bi bi-fire"></i> Sequência</h5>
-                    <p class="stat-value animate-counter mb-0" th:text="${sequenciaAtual}">—</p>
+        <div class="col-6 col-md-3">
+            <div class="stat-tile stat-tile-warning">
+                <div class="card-body py-3 py-md-4">
+                    <div class="stat-label"><i class="bi bi-fire stat-icon"></i> Sequência</div>
+                    <p class="stat-value mb-0" th:text="${sequenciaAtual}">—</p>
                 </div>
             </div>
         </div>
@@ -106,12 +106,12 @@
 </div>
 
 <div th:fragment="campeonato-atual">
-    <div th:if="${campeonatoAtual != null}" class="card card-elevated mb-4 animate-on-scroll">
+    <div th:if="${campeonatoAtual != null}" class="card card-elevated mb-4 mt-3">
         <div class="card-header card-header-clean">
             <h4 class="mb-0"><i class="bi bi-flag" style="color: var(--color-primary);"></i> Campeonato Atual</h4>
         </div>
         <div class="card-body">
-            <div class="row align-items-center">
+            <div class="row align-items-center g-3">
                 <div class="col-md-8">
                     <h5 class="mb-1" th:text="${campeonatoAtual.nome}">Nome</h5>
                     <p class="text-muted mb-1">
@@ -130,7 +130,7 @@
                             <span th:text="${#numbers.formatDecimal((progressoCampeonato.realizadas / progressoCampeonato.total) * 100, 0, 0) + '%'}"></span>
                         </div>
                         <div class="progress" style="height: 8px;">
-                            <div class="progress-bar bg-primary"
+                            <div class="progress-bar"
                                  th:style="${'width: ' + (progressoCampeonato.total > 0 ? (progressoCampeonato.realizadas / progressoCampeonato.total) * 100 : 0) + '%'}"></div>
                         </div>
                     </div>
@@ -149,8 +149,8 @@
                         </span>
                     </div>
                 </div>
-                <div class="col-md-4 text-md-end mt-3 mt-md-0">
-                    <a th:href="@{/campeonatos/{id}(id=${campeonatoAtual.id})}" class="btn btn-primary">
+                <div class="col-md-4 text-md-end">
+                    <a th:href="@{/campeonatos/{id}(id=${campeonatoAtual.id})}" class="btn btn-primary w-100 w-md-auto">
                         Ver detalhes <i class="bi bi-arrow-right"></i>
                     </a>
                 </div>
@@ -158,7 +158,7 @@
         </div>
     </div>
 
-    <div th:if="${campeonatoAtual == null}" class="card card-elevated mb-4 animate-on-scroll">
+    <div th:if="${campeonatoAtual == null}" class="card card-elevated mb-4 mt-3">
         <div class="card-body text-center py-4">
             <i class="bi bi-flag display-4 d-block mb-2 text-muted"></i>
             <p class="mb-1">Nenhum campeonato registrado</p>
@@ -170,16 +170,16 @@
 <div th:fragment="medalhas">
     <div class="row mb-4">
         <div class="col-12">
-            <h5 class="mb-3 animate-on-scroll"><i class="bi bi-stars"></i> Medalhas</h5>
+            <h5 class="mb-3"><i class="bi bi-stars"></i> Medalhas</h5>
         </div>
-        <div th:each="tipo : ${tiposMedalha}" class="col-md-4 mb-2 animate-on-scroll">
-            <div class="card card-elevated text-center">
+        <div th:each="tipo : ${tiposMedalha}" class="col-4 mb-2">
+            <div class="card card-elevated text-center h-100">
                 <div class="card-body py-3">
                     <i class="medal-icon bi bi-star-fill"
                        th:classappend="${tipo.name() == 'OURO' ? 'text-warning' : tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
                        th:style="${tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"></i>
                     <span class="h5 ms-1 fw-bold" th:text="${medalhasPorTipo.getOrDefault(tipo, 0L)}">0</span>
-                    <span class="small ms-1"
+                    <span class="small ms-1 d-none d-sm-inline"
                           th:classappend="${tipo.name() == 'OURO' ? 'text-warning' : tipo.name() == 'PRATA' ? 'text-secondary' : ''}"
                           th:style="${tipo.name() == 'BRONZE' ? 'color: #cd7f32' : ''}"
                           th:text="${tipo.name()}"></span>
@@ -190,8 +190,8 @@
 </div>
 
 <div th:fragment="periodo-filtro">
-    <div id="periodo-header" class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2">
-        <h2 class="mb-0"><i class="bi bi-bar-chart"></i> Estatísticas Gerais</h2>
+    <div id="periodo-header" class="page-header d-flex flex-wrap justify-content-between align-items-center mt-3 mt-md-4 mb-3 mb-md-4 gap-2">
+        <h2 class="mb-0"><i class="bi bi-bar-chart"></i> Estatísticas</h2>
         <div id="periodo-filtro" class="btn-group btn-group-sm flex-wrap" role="group">
             <a th:href="@{/geral(periodo='ano')}"
                hx-get="/geral?periodo=ano" hx-target="#estatisticas-container" hx-swap="outerHTML"
@@ -210,8 +210,8 @@
 </div>
 
 <div th:fragment="estatisticas">
-    <div id="periodo-header" class="d-flex flex-wrap justify-content-between align-items-center mt-4 mb-4 gap-2" hx-swap-oob="true">
-        <h2 class="mb-0"><i class="bi bi-bar-chart"></i> Estatísticas Gerais</h2>
+    <div id="periodo-header" class="page-header d-flex flex-wrap justify-content-between align-items-center mt-3 mt-md-4 mb-3 mb-md-4 gap-2" hx-swap-oob="true">
+        <h2 class="mb-0"><i class="bi bi-bar-chart"></i> Estatísticas</h2>
         <div id="periodo-filtro" class="btn-group btn-group-sm flex-wrap" role="group">
             <a th:href="@{/geral(periodo='ano')}"
                hx-get="/geral?periodo=ano" hx-target="#estatisticas-container" hx-swap="outerHTML"
