@@ -175,7 +175,7 @@
     });
   }
 
-  function adicionarSet() {
+  window.adicionarSet = function adicionarSet() {
     var container = document.getElementById('sets-container');
     if (!container) return false;
     var count = container.querySelectorAll('.set-row').length;
