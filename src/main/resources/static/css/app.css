@@ -126,7 +126,7 @@
 }
 
 [data-theme="dark"] .table { color: var(--color-text) !important; }
-[data-theme="dark"] .table > :not(caption) > * > * { border-bottom-color: var(--color-border) !important; }
+[data-theme="dark"] .table > :not(caption) > * > * { border-bottom-color: var(--color-border) !important; color: var(--color-text) !important; }
 [data-theme="dark"] .table-hover > tbody > tr:hover > * { background: var(--color-surface-hover) !important; }
 [data-theme="dark"] .thead-light th, [data-theme="dark"] .table > thead > tr > th { background: var(--color-surface-hover) !important; color: var(--color-text) !important; }
 [data-theme="dark"] hr { border-color: var(--color-border) !important; }
