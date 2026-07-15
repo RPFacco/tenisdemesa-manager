@@ -7,8 +7,9 @@ import com.ana.tenisdemesa.repository.MedalhaRepository;
 import com.ana.tenisdemesa.repository.PartidaRepository;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EstatisticaService {
@@ -27,47 +28,47 @@ public class EstatisticaService {
         return campeonatoRepository.count();
     }
 
-    public long totalVitorias() {
-        return contarPorResultado(null, true);
-    }
+    /**
+     * Vitórias, derrotas, taxa e sequência calculados sobre uma única consulta,
+     * em vez de uma ida ao banco por estatística.
+     */
+    public Map<String, Object> resumoPeriodo(LocalDate inicio, LocalDate fim) {
+        List<Partida> ordenadas = (inicio != null && fim != null)
+                ? partidaRepository.findByDataBetweenOrderByDataDesc(inicio, fim)
+                : partidaRepository.findAllByOrderByDataDesc();
 
-    public long totalVitorias(LocalDate inicio, LocalDate fim) {
-        return contarPorResultadoPeriodo(inicio, fim, true);
-    }
-
-    public long totalDerrotas() {
-        return contarPorResultado(null, false);
-    }
-
-    public long totalDerrotas(LocalDate inicio, LocalDate fim) {
-        return contarPorResultadoPeriodo(inicio, fim, false);
-    }
-
-    private long contarPorResultadoPeriodo(LocalDate inicio, LocalDate fim, boolean vitoria) {
-        if (inicio == null || fim == null) return contarPorResultado(null, vitoria);
-        return partidaRepository.findByDataBetween(inicio, fim).stream()
-                .filter(vitoria ? Partida::isVitoria : Partida::isDerrota)
-                .count();
-    }
-
-    private long contarPorResultado(LocalDate inicioFim, boolean vitoria) {
-        List<Partida> todas = partidaRepository.findAll();
-        return vitoria
-                ? todas.stream().filter(Partida::isVitoria).count()
-                : todas.stream().filter(Partida::isDerrota).count();
-    }
-
-    public String taxaVitoria() {
-        return taxaVitoria(null, null);
-    }
-
-    public String taxaVitoria(LocalDate inicio, LocalDate fim) {
-        long vitorias = totalVitorias(inicio, fim);
-        long derrotas = totalDerrotas(inicio, fim);
+        long vitorias = ordenadas.stream().filter(Partida::isVitoria).count();
+        long derrotas = ordenadas.stream().filter(Partida::isDerrota).count();
         long total = vitorias + derrotas;
-        if (total == 0) return "—";
-        long percentual = Math.round((double) vitorias / total * 100);
-        return percentual + "%";
+        String taxa = total == 0 ? "—" : Math.round((double) vitorias / total * 100) + "%";
+
+        Map<String, Object> resumo = new LinkedHashMap<>();
+        resumo.put("totalVitorias", vitorias);
+        resumo.put("totalDerrotas", derrotas);
+        resumo.put("taxaVitoria", taxa);
+        resumo.put("sequenciaAtual", calcularSequencia(ordenadas));
+        return resumo;
+    }
+
+    private String calcularSequencia(List<Partida> ordenadasDesc) {
+        if (ordenadasDesc.isEmpty()) return "—";
+
+        Partida primeira = ordenadasDesc.get(0);
+        if (primeira.getResultado() == null) return "—";
+        boolean ehVitoria = primeira.isVitoria();
+
+        long count = 1;
+        for (int i = 1; i < ordenadasDesc.size(); i++) {
+            Partida p = ordenadasDesc.get(i);
+            if (p.getResultado() == null) break;
+            if (ehVitoria ? p.isVitoria() : p.isDerrota()) {
+                count++;
+            } else {
+                break;
+            }
+        }
+        String label = ehVitoria ? "V" : "D";
+        return count + label;
     }
 
     public Map<TipoMedalha, Long> medalhasPorTipo() {
@@ -80,36 +81,5 @@ public class EstatisticaService {
             mapa.put((TipoMedalha) row[0], (Long) row[1]);
         }
         return mapa;
-    }
-
-    public String sequenciaAtual() {
-        return sequenciaAtual(null, null);
-    }
-
-    public String sequenciaAtual(LocalDate inicio, LocalDate fim) {
-        List<Partida> ordenadas;
-        if (inicio != null && fim != null) {
-            ordenadas = partidaRepository.findByDataBetweenOrderByDataDesc(inicio, fim);
-        } else {
-            ordenadas = partidaRepository.findAllByOrderByDataDesc();
-        }
-        if (ordenadas.isEmpty()) return "—";
-
-        Partida primeira = ordenadas.get(0);
-        if (primeira.getResultado() == null) return "—";
-        boolean ehVitoria = primeira.isVitoria();
-
-        long count = 1;
-        for (int i = 1; i < ordenadas.size(); i++) {
-            Partida p = ordenadas.get(i);
-            if (p.getResultado() == null) break;
-            if (ehVitoria ? p.isVitoria() : p.isDerrota()) {
-                count++;
-            } else {
-                break;
-            }
-        }
-        String label = ehVitoria ? "V" : "D";
-        return count + label;
     }
 }

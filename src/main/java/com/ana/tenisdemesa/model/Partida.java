@@ -36,6 +36,7 @@ public class Partida {
     @ElementCollection
     @CollectionTable(name = "partida_sets", joinColumns = @JoinColumn(name = "partida_id"))
     @OrderColumn(name = "set_order")
+    @org.hibernate.annotations.Fetch(org.hibernate.annotations.FetchMode.SUBSELECT)
     private List<SetPartida> sets = new ArrayList<>();
 
     private String linkYoutube;

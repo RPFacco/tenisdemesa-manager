@@ -53,10 +53,7 @@ public class GeralController {
             periodoLabel = "Todos";
         }
 
-        model.addAttribute("totalVitorias", estatisticaService.totalVitorias(inicio, fim));
-        model.addAttribute("totalDerrotas", estatisticaService.totalDerrotas(inicio, fim));
-        model.addAttribute("taxaVitoria", estatisticaService.taxaVitoria(inicio, fim));
-        model.addAttribute("sequenciaAtual", estatisticaService.sequenciaAtual(inicio, fim));
+        model.addAllAttributes(estatisticaService.resumoPeriodo(inicio, fim));
         model.addAttribute("medalhasPorTipo", estatisticaService.medalhasPorTipo());
         model.addAttribute("totalCampeonatos", estatisticaService.totalCampeonatos());
         model.addAttribute("tiposMedalha", TipoMedalha.values());
