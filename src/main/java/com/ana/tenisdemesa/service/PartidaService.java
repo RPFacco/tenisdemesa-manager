@@ -15,12 +15,34 @@ public class PartidaService {
     }
 
     public Partida salvar(Partida partida) {
-        validarSets(partida);
+        validarPlacar(partida);
         return repository.save(partida);
     }
 
     public void excluir(Long id) {
         repository.deleteById(id);
+    }
+
+    public void validarPlacar(Partida partida) {
+        if (partida.getSets().isEmpty()) {
+            validarPlacarSimples(partida);
+        } else {
+            validarSets(partida);
+        }
+    }
+
+    private void validarPlacarSimples(Partida partida) {
+        Integer atleta = partida.getSetsAtleta();
+        Integer adversario = partida.getSetsAdversario();
+        if (atleta == null || adversario == null) {
+            throw new IllegalArgumentException("Informe quantos sets cada um venceu.");
+        }
+        if (atleta < 0 || adversario < 0) {
+            throw new IllegalArgumentException("O número de sets não pode ser negativo.");
+        }
+        if (atleta.equals(adversario)) {
+            throw new IllegalArgumentException("A partida não pode terminar empatada no total de sets. Verifique os resultados.");
+        }
     }
 
     public void validarSets(Partida partida) {

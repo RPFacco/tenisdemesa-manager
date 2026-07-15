@@ -72,6 +72,34 @@
     return false;
   }
 
+  function initPlacarModeToggle() {
+    var radioDetalhado = document.getElementById('modo-detalhado');
+    var radioSimples = document.getElementById('modo-simples');
+    var painelDetalhado = document.getElementById('placar-detalhado');
+    var painelSimples = document.getElementById('placar-simples');
+    if (!radioDetalhado || !radioSimples || !painelDetalhado || !painelSimples) return;
+
+    function setEnabled(panel, enabled) {
+      panel.hidden = !enabled;
+      panel.querySelectorAll('input, button').forEach(function (el) {
+        el.disabled = !enabled;
+      });
+    }
+
+    function aplicar() {
+      var detalhado = radioDetalhado.checked;
+      if (detalhado && !painelDetalhado.querySelector('.set-row')) {
+        window.adicionarSet();
+      }
+      setEnabled(painelDetalhado, detalhado);
+      setEnabled(painelSimples, !detalhado);
+    }
+
+    radioDetalhado.addEventListener('change', aplicar);
+    radioSimples.addEventListener('change', aplicar);
+    aplicar();
+  }
+
   function initSetsManager() {
     var container = document.getElementById('sets-container');
     if (!container) return;
@@ -103,5 +131,6 @@
     initNavbarScroll();
     initFloatingLabels();
     initSetsManager();
+    initPlacarModeToggle();
   });
 })();

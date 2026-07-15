@@ -8,9 +8,10 @@
         <h2><i class="bi bi-trophy"></i> Campeonatos</h2>
         <a th:href="@{/campeonatos/novo}" class="btn btn-primary d-none d-md-inline-block"><i class="bi bi-plus-circle"></i> Novo Campeonato</a>
     </div>
-    <div th:if="${#lists.isEmpty(campeonatos)}" class="alert alert-info text-center py-4">
-        <i class="bi bi-trophy display-4 d-block mb-2"></i>
-        Nenhum campeonato cadastrado ainda.
+    <div th:if="${#lists.isEmpty(campeonatos)}" class="empty-state">
+        <i class="bi bi-trophy"></i>
+        <p>Nenhum campeonato ainda. Crie o primeiro para começar a registrar partidas e medalhas.</p>
+        <a th:href="@{/campeonatos/novo}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Novo campeonato</a>
     </div>
     <div th:unless="${#lists.isEmpty(campeonatos)}" class="row g-3">
         <div th:each="c : ${campeonatos}" class="col-12 col-md-6 col-lg-4">

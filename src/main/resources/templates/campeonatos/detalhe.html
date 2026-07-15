@@ -55,9 +55,9 @@
             <a th:href="@{/campeonatos/{id}/partidas/nova(id=${campeonato.id})}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Nova Partida</a>
         </div>
         <div class="card-body p-0">
-            <div th:if="${#lists.isEmpty(campeonato.partidas)}" class="alert alert-info text-center py-4 mb-0">
-                <i class="bi bi-list-check display-4 d-block mb-2"></i>
-                Nenhuma partida registrada.
+            <div th:if="${#lists.isEmpty(campeonato.partidas)}" class="empty-state border-0 m-3">
+                <i class="bi bi-list-check"></i>
+                <p>Nenhuma partida neste campeonato. Registre a primeira em "Nova Partida".</p>
             </div>
             <div th:unless="${#lists.isEmpty(campeonato.partidas)}" class="table-responsive d-none d-md-block">
                 <table class="table table-hover mb-0">
@@ -78,7 +78,11 @@
                             <td class="fw-semibold" th:text="${p.adversario}"></td>
                             <td th:text="${p.fase != null ? p.fase.name().replace('_', ' ') : '—'}"></td>
                             <td>
-                                <span th:each="set, iter : ${p.sets}" th:text="${set.pontosAtleta + '-' + set.pontosAdversario}" class="scorechip"></span>
+                                <span th:each="set : ${p.sets}" th:text="${set.pontosAtleta + '-' + set.pontosAdversario}" class="scorechip"
+                                      th:classappend="${set.pontosAtleta > set.pontosAdversario ? 'scorechip-win' : (set.pontosAtleta < set.pontosAdversario ? 'scorechip-loss' : '')}"></span>
+                                <span th:if="${#lists.isEmpty(p.sets)}" class="scorechip"
+                                      th:classappend="${p.vitoria ? 'scorechip-win' : (p.derrota ? 'scorechip-loss' : '')}"
+                                      th:text="${p.placar}"></span>
                             </td>
                             <td>
                                 <span th:if="${p.vitoria}" class="badge bg-success">Vitória</span>
@@ -112,8 +116,12 @@
                     <div class="small text-muted mb-1 d-flex align-items-center flex-wrap gap-1">
                         <span th:text="${p.fase != null ? p.fase.name().replace('_', ' ') : '—'}"></span>
                         <span th:if="${not #lists.isEmpty(p.sets)}" class="d-flex align-items-center flex-wrap gap-1 ms-1">
-                            <span th:each="set, iter : ${p.sets}" th:text="${set.pontosAtleta + '-' + set.pontosAdversario}" class="scorechip"></span>
+                            <span th:each="set : ${p.sets}" th:text="${set.pontosAtleta + '-' + set.pontosAdversario}" class="scorechip"
+                                  th:classappend="${set.pontosAtleta > set.pontosAdversario ? 'scorechip-win' : (set.pontosAtleta < set.pontosAdversario ? 'scorechip-loss' : '')}"></span>
                         </span>
+                        <span th:if="${#lists.isEmpty(p.sets)}" class="scorechip ms-1"
+                              th:classappend="${p.vitoria ? 'scorechip-win' : (p.derrota ? 'scorechip-loss' : '')}"
+                              th:text="${p.placar}"></span>
                     </div>
                     <div class="d-flex gap-2 mt-2">
                         <a th:if="${p.linkYoutube != null and !p.linkYoutube.isEmpty()}" th:href="${p.linkYoutube}" target="_blank" class="btn btn-sm btn-outline-danger" style="min-height:44px;display:flex;align-items:center;"><i class="bi bi-youtube"></i></a>
@@ -134,9 +142,9 @@
             <a th:href="@{/campeonatos/{id}/medalhas/nova(id=${campeonato.id})}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Nova Medalha</a>
         </div>
         <div class="card-body p-0">
-            <div th:if="${#lists.isEmpty(campeonato.medalhas)}" class="alert alert-info text-center py-4 mb-0">
-                <i class="bi bi-stars display-4 d-block mb-2"></i>
-                Nenhuma medalha conquistada.
+            <div th:if="${#lists.isEmpty(campeonato.medalhas)}" class="empty-state border-0 m-3">
+                <i class="bi bi-stars"></i>
+                <p>Nenhuma medalha registrada neste campeonato.</p>
             </div>
             <div th:unless="${#lists.isEmpty(campeonato.medalhas)}" class="table-responsive d-none d-md-block">
                 <table class="table table-hover mb-0">

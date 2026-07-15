@@ -20,17 +20,17 @@
                     <h5 class="mb-0"><i class="bi bi-list-check"></i> Últimas Partidas</h5>
                 </div>
                 <div class="card-body p-0">
-                    <div th:if="${#lists.isEmpty(ultimasPartidas)}" class="text-center py-4">
-                        <i class="bi bi-list-check display-6 d-block mb-2 text-muted"></i>
-                        <p class="mb-1 text-muted">Nenhuma partida registrada</p>
+                    <div th:if="${#lists.isEmpty(ultimasPartidas)}" class="empty-state border-0 m-3">
+                        <i class="bi bi-list-check"></i>
+                        <p>Nenhuma partida no período.</p>
                         <a th:href="@{/campeonatos}" class="btn btn-outline-primary btn-sm">Ver campeonatos</a>
                     </div>
                     <ul th:unless="${#lists.isEmpty(ultimasPartidas)}" class="list-group list-group-flush">
                         <li th:each="p : ${ultimasPartidas}" class="list-group-item d-flex justify-content-between align-items-center gap-2 py-2">
                             <div class="d-flex align-items-center gap-2 flex-wrap">
-                                <span class="scorechip" th:text="${#temporals.format(p.data, 'dd/MM')}">12/06</span>
+                                <span class="text-muted small" th:text="${#temporals.format(p.data, 'dd/MM')}">12/06</span>
                                 <span class="fw-semibold" th:text="${p.adversario}">Adversário</span>
-                                <span class="scorechip" th:text="${p.placar}">3-1</span>
+                                <span class="scorechip" th:classappend="${p.vitoria ? 'scorechip-win' : (p.derrota ? 'scorechip-loss' : '')}" th:text="${p.placar}">3-1</span>
                                 <span class="text-muted small" th:text="'(' + ${p.campeonato.nome} + ')'"></span>
                             </div>
                             <span th:if="${p.resultado != null and p.resultado.name() == 'VITORIA'}" class="badge bg-success">Vitória</span>
@@ -47,15 +47,15 @@
                     <h5 class="mb-0"><i class="bi bi-clock"></i> Últimos Treinos</h5>
                 </div>
                 <div class="card-body p-0">
-                    <div th:if="${#lists.isEmpty(ultimosTreinos)}" class="text-center py-4">
-                        <i class="bi bi-clock display-6 d-block mb-2 text-muted"></i>
-                        <p class="mb-1 text-muted">Nenhum treino registrado</p>
+                    <div th:if="${#lists.isEmpty(ultimosTreinos)}" class="empty-state border-0 m-3">
+                        <i class="bi bi-clock"></i>
+                        <p>Nenhum treino no período.</p>
                         <a th:href="@{/treinos/novo}" class="btn btn-outline-primary btn-sm">Novo treino</a>
                     </div>
                     <ul th:unless="${#lists.isEmpty(ultimosTreinos)}" class="list-group list-group-flush">
                         <li th:each="t : ${ultimosTreinos}" class="list-group-item d-flex justify-content-between align-items-center py-2">
                             <div class="d-flex align-items-center gap-2">
-                                <span class="scorechip" th:text="${#temporals.format(t.data, 'dd/MM')}">11/06</span>
+                                <span class="text-muted small" th:text="${#temporals.format(t.data, 'dd/MM')}">11/06</span>
                                 <span th:text="${t.tipo.name()}">Técnica</span>
                             </div>
                             <span class="text-muted small" th:text="${@treinoHelper.formatDuracao(t.duracaoHoras)}">45min</span>
@@ -69,38 +69,21 @@
 </section>
 
 <div th:fragment="estatisticas-cards">
-    <div class="row g-2 g-md-3 mb-1">
-        <div class="col-6 col-md-3">
-            <div class="stat-tile stat-tile-success">
-                <div class="card-body py-3 py-md-4">
-                    <div class="stat-label"><i class="bi bi-trophy stat-icon"></i> Vitórias</div>
-                    <p class="stat-value mb-0" th:text="${totalVitorias}">0</p>
-                </div>
+    <div class="scoreboard-hero mb-3">
+        <div class="sb-numbers">
+            <div class="sb-col">
+                <span class="sb-num sb-num-wins" th:text="${totalVitorias}">0</span>
+                <span class="sb-label">Vitórias</span>
+            </div>
+            <span class="sb-x">×</span>
+            <div class="sb-col">
+                <span class="sb-num sb-num-losses" th:text="${totalDerrotas}">0</span>
+                <span class="sb-label">Derrotas</span>
             </div>
         </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-tile stat-tile-danger">
-                <div class="card-body py-3 py-md-4">
-                    <div class="stat-label"><i class="bi bi-x-circle stat-icon"></i> Derrotas</div>
-                    <p class="stat-value mb-0" th:text="${totalDerrotas}">0</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-tile stat-tile-info">
-                <div class="card-body py-3 py-md-4">
-                    <div class="stat-label"><i class="bi bi-pie-chart stat-icon"></i> Taxa de Vitória</div>
-                    <p class="stat-value mb-0" th:text="${taxaVitoria}">—</p>
-                </div>
-            </div>
-        </div>
-        <div class="col-6 col-md-3">
-            <div class="stat-tile stat-tile-warning">
-                <div class="card-body py-3 py-md-4">
-                    <div class="stat-label"><i class="bi bi-fire stat-icon"></i> Sequência</div>
-                    <p class="stat-value mb-0" th:text="${sequenciaAtual}">—</p>
-                </div>
-            </div>
+        <div class="sb-meta">
+            <span>TAXA DE VITÓRIA<strong th:text="${taxaVitoria}">—</strong></span>
+            <span>SEQUÊNCIA<strong th:text="${sequenciaAtual}">—</strong></span>
         </div>
     </div>
 </div>
@@ -158,12 +141,10 @@
         </div>
     </div>
 
-    <div th:if="${campeonatoAtual == null}" class="card card-elevated mb-4 mt-3">
-        <div class="card-body text-center py-4">
-            <i class="bi bi-flag display-4 d-block mb-2 text-muted"></i>
-            <p class="mb-1">Nenhum campeonato registrado</p>
-            <a th:href="@{/campeonatos/novo}" class="btn btn-primary btn-sm">Criar campeonato</a>
-        </div>
+    <div th:if="${campeonatoAtual == null}" class="empty-state mb-4 mt-3">
+        <i class="bi bi-flag"></i>
+        <p>Nenhum campeonato registrado.</p>
+        <a th:href="@{/campeonatos/novo}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Criar campeonato</a>
     </div>
 </div>
 

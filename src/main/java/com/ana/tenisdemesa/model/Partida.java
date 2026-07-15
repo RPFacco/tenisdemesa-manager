@@ -40,12 +40,39 @@ public class Partida {
 
     private String linkYoutube;
 
+    /** Placar simples (sem pontuação por set): total de sets da atleta e do adversário. */
+    private Integer setsAtleta;
+
+    private Integer setsAdversario;
+
+    @Transient
+    public boolean isPlacarDetalhado() {
+        return !sets.isEmpty();
+    }
+
+    @Transient
+    private long contarSetsVencidos() {
+        if (!sets.isEmpty()) {
+            return sets.stream()
+                    .filter(s -> s.getPontosAtleta() > s.getPontosAdversario())
+                    .count();
+        }
+        return setsAtleta != null ? setsAtleta : 0;
+    }
+
+    @Transient
+    private long contarSetsPerdidos() {
+        if (!sets.isEmpty()) {
+            return sets.size() - contarSetsVencidos();
+        }
+        return setsAdversario != null ? setsAdversario : 0;
+    }
+
     @Transient
     public ResultadoPartida getResultado() {
-        long setsVencidos = sets.stream()
-                .filter(s -> s.getPontosAtleta() > s.getPontosAdversario())
-                .count();
-        long setsPerdidos = sets.size() - setsVencidos;
+        if (sets.isEmpty() && setsAtleta == null && setsAdversario == null) return null;
+        long setsVencidos = contarSetsVencidos();
+        long setsPerdidos = contarSetsPerdidos();
         if (setsVencidos > setsPerdidos) return ResultadoPartida.VITORIA;
         if (setsPerdidos > setsVencidos) return ResultadoPartida.DERROTA;
         return null;
@@ -53,11 +80,7 @@ public class Partida {
 
     @Transient
     public String getPlacar() {
-        long setsVencidos = sets.stream()
-                .filter(s -> s.getPontosAtleta() > s.getPontosAdversario())
-                .count();
-        long setsPerdidos = sets.size() - setsVencidos;
-        return setsVencidos + "-" + setsPerdidos;
+        return contarSetsVencidos() + "-" + contarSetsPerdidos();
     }
 
     @Transient
@@ -86,4 +109,8 @@ public class Partida {
     public void setSets(List<SetPartida> sets) { this.sets = sets; }
     public String getLinkYoutube() { return linkYoutube; }
     public void setLinkYoutube(String linkYoutube) { this.linkYoutube = linkYoutube; }
+    public Integer getSetsAtleta() { return setsAtleta; }
+    public void setSetsAtleta(Integer setsAtleta) { this.setsAtleta = setsAtleta; }
+    public Integer getSetsAdversario() { return setsAdversario; }
+    public void setSetsAdversario(Integer setsAdversario) { this.setsAdversario = setsAdversario; }
 }

@@ -36,14 +36,13 @@ public class PartidaController {
     }
 
     @PostMapping
-    public String salvar(@PathVariable Long campeonatoId, Partida partida, RedirectAttributes redirect) {
+    public String salvar(@PathVariable Long campeonatoId,
+                         @RequestParam(name = "modoPlacar", defaultValue = "detalhado") String modoPlacar,
+                         Partida partida, RedirectAttributes redirect) {
         try {
             Campeonato c = campeonatoService.buscarPorId(campeonatoId);
             partida.setCampeonato(c);
-            int i = 1;
-            for (SetPartida set : partida.getSets()) {
-                set.setNumeroSet(i++);
-            }
+            aplicarModoPlacar(partida, modoPlacar);
             partidaService.salvar(partida);
             redirect.addFlashAttribute("mensagem", "Partida salva com sucesso!");
         } catch (IllegalArgumentException e) {
@@ -51,6 +50,19 @@ public class PartidaController {
             return "redirect:/campeonatos/" + campeonatoId + "/partidas/nova";
         }
         return "redirect:/campeonatos/" + campeonatoId;
+    }
+
+    private void aplicarModoPlacar(Partida partida, String modoPlacar) {
+        if ("simples".equals(modoPlacar)) {
+            partida.getSets().clear();
+        } else {
+            partida.setSetsAtleta(null);
+            partida.setSetsAdversario(null);
+            int i = 1;
+            for (SetPartida set : partida.getSets()) {
+                set.setNumeroSet(i++);
+            }
+        }
     }
 
     @GetMapping("/{partidaId}/editar")
@@ -66,15 +78,14 @@ public class PartidaController {
     }
 
     @PostMapping("/{partidaId}")
-    public String atualizar(@PathVariable Long campeonatoId, @PathVariable Long partidaId, Partida partida, RedirectAttributes redirect) {
+    public String atualizar(@PathVariable Long campeonatoId, @PathVariable Long partidaId,
+                            @RequestParam(name = "modoPlacar", defaultValue = "detalhado") String modoPlacar,
+                            Partida partida, RedirectAttributes redirect) {
         try {
             Campeonato c = campeonatoService.buscarPorId(campeonatoId);
             partida.setId(partidaId);
             partida.setCampeonato(c);
-            int i = 1;
-            for (SetPartida set : partida.getSets()) {
-                set.setNumeroSet(i++);
-            }
+            aplicarModoPlacar(partida, modoPlacar);
             partidaService.salvar(partida);
             redirect.addFlashAttribute("mensagem", "Partida atualizada com sucesso!");
         } catch (IllegalArgumentException e) {

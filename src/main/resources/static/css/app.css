@@ -1,17 +1,39 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap');
+@font-face {
+  font-family: 'Bebas Neue';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/bebas-neue-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Manrope';
+  font-style: normal;
+  font-weight: 400 800;
+  font-display: swap;
+  src: url('/fonts/manrope-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 500 700;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
+}
 
 :root {
-  --color-primary: #F2600C;
-  --color-primary-dark: #C94F09;
-  --color-primary-light: #FDE4D0;
+  --color-primary: #1C5DD9;
+  --color-primary-dark: #14479F;
+  --color-primary-light: #D8E4FA;
   --color-success: #1B6E52;
   --color-success-light: #DCEEE6;
   --color-danger: #C0362C;
   --color-danger-light: #F6DEDB;
   --color-warning: #B8860B;
   --color-warning-light: #F3E6C4;
-  --color-info: #2C6E8E;
-  --color-info-light: #DCEBF1;
+  --color-info: #0F7286;
+  --color-info-light: #D9EDF2;
 
   --color-bg: #F7F3EC;
   --color-surface: #FFFFFF;
@@ -29,7 +51,7 @@
   --color-bottom-nav-bg: #FFFFFF;
   --color-bottom-nav-border: #E1D9C9;
   --color-bottom-nav-text: #8B8377;
-  --color-bottom-nav-active: #F2600C;
+  --color-bottom-nav-active: #1C5DD9;
 
   --color-chip-bg: #1C1B18;
   --color-chip-text: #F7F3EC;
@@ -52,17 +74,17 @@
 }
 
 [data-theme="dark"] {
-  --color-primary: #FF7A2E;
-  --color-primary-dark: #F2600C;
-  --color-primary-light: rgba(255, 122, 46, 0.16);
+  --color-primary: #6FA3F5;
+  --color-primary-dark: #3D7BE8;
+  --color-primary-light: rgba(111, 163, 245, 0.16);
   --color-success: #35A47C;
   --color-success-light: rgba(53, 164, 124, 0.16);
   --color-danger: #E1685C;
   --color-danger-light: rgba(225, 104, 92, 0.16);
   --color-warning: #D9A441;
   --color-warning-light: rgba(217, 164, 65, 0.16);
-  --color-info: #5AA0BF;
-  --color-info-light: rgba(90, 160, 191, 0.16);
+  --color-info: #56B3CC;
+  --color-info-light: rgba(86, 179, 204, 0.16);
 
   --color-bg: #16150F;
   --color-surface: #201F19;
@@ -85,7 +107,7 @@
   --color-bottom-nav-bg: #1C1B18;
   --color-bottom-nav-border: #35321F;
   --color-bottom-nav-text: #8B8377;
-  --color-bottom-nav-active: #FF7A2E;
+  --color-bottom-nav-active: #6FA3F5;
 
   --color-chip-bg: #0E0D09;
   --color-chip-text: #F1ECE0;
@@ -191,7 +213,7 @@ body {
 
 @media (max-width: 767.98px) {
   .page-container {
-    padding-top: 56px;
+    padding-top: 64px;
   }
   .content-wrapper {
     padding-bottom: 96px;
@@ -281,8 +303,113 @@ h3 {
   margin-left: 0.3rem;
 }
 
-.scorechip-win { box-shadow: inset 0 0 0 1px var(--color-chip-border), inset 2px 0 0 var(--color-success); padding-left: 0.45em; }
-.scorechip-loss { box-shadow: inset 0 0 0 1px var(--color-chip-border), inset 2px 0 0 var(--color-danger); padding-left: 0.45em; }
+.scorechip-win { box-shadow: inset 0 0 0 1px var(--color-chip-border), inset 3px 0 0 #4DBE93; padding-left: 0.5em; }
+.scorechip-loss { box-shadow: inset 0 0 0 1px var(--color-chip-border), inset 3px 0 0 #E8877B; padding-left: 0.5em; }
+
+/* ---------- Scoreboard hero (Geral) ---------- */
+
+.scoreboard-hero {
+  background: var(--color-surface);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-top: 3px solid var(--color-primary);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  padding: 1.5rem 1rem 1rem;
+  text-align: center;
+}
+
+.sb-numbers {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1.5rem;
+}
+
+.sb-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 90px;
+}
+
+.sb-num {
+  font-family: var(--font-display);
+  font-variant-numeric: tabular-nums;
+  font-size: 4.5rem;
+  line-height: 0.95;
+}
+
+.sb-num-wins { color: var(--color-success); }
+.sb-num-losses { color: var(--color-danger); }
+
+.sb-x {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  line-height: 1;
+  align-self: center;
+  color: var(--color-text-muted);
+}
+
+.sb-label {
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-secondary);
+  margin-top: 0.35rem;
+}
+
+.sb-meta {
+  border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
+  padding-top: 0.7rem;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  color: var(--color-text-secondary);
+}
+
+.sb-meta strong {
+  color: var(--color-text);
+  font-weight: 700;
+  margin-left: 0.3em;
+}
+
+@media (max-width: 767.98px) {
+  .sb-num { font-size: 3.4rem; }
+  .sb-col { min-width: 72px; }
+  .scoreboard-hero { padding: 1.1rem 0.75rem 0.8rem; }
+}
+
+/* ---------- Empty states ---------- */
+
+.empty-state {
+  text-align: center;
+  padding: 2rem 1rem;
+  border: 2px dashed var(--color-border-strong);
+  border-radius: var(--radius-md);
+  color: var(--color-text-secondary);
+}
+
+.empty-state > i {
+  font-size: 2rem;
+  color: var(--color-text-muted);
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+  margin-bottom: 0.75rem;
+}
+
+.empty-state p:last-child {
+  margin-bottom: 0;
+}
 
 /* ---------- Cards ---------- */
 
@@ -498,20 +625,30 @@ h3 {
   margin-bottom: 2px;
 }
 
-.theme-toggle-mobile-float {
+.mobile-header {
   position: fixed;
-  top: 10px;
-  right: 12px;
-  z-index: 1032;
-  background: var(--color-surface);
-  box-shadow: var(--shadow-sm);
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1031;
+  height: 52px;
+  background: var(--color-navbar-bg);
+  border-bottom: 1px solid var(--color-border);
   display: flex;
   align-items: center;
-  justify-content: center;
-  border: 1px solid var(--color-border);
+  justify-content: space-between;
+  padding: 0 8px 0 14px;
+  transition: background var(--transition-normal), border-color var(--transition-normal);
+}
+
+.mobile-header .mobile-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 800;
+  font-size: 1rem;
+  color: var(--color-navbar-text);
+  text-decoration: none;
 }
 
 .fab {

@@ -55,9 +55,10 @@
     </div>
 
     <h3>Histórico</h3>
-    <div th:if="${#lists.isEmpty(treinos)}" class="alert alert-info text-center py-4">
-        <i class="bi bi-clock display-4 d-block mb-2"></i>
-        Nenhum treino registrado.
+    <div th:if="${#lists.isEmpty(treinos)}" class="empty-state">
+        <i class="bi bi-clock"></i>
+        <p>Nenhum treino registrado. Registre o primeiro para acompanhar a evolução.</p>
+        <a th:href="@{/treinos/novo}" class="btn btn-primary btn-sm"><i class="bi bi-plus-circle"></i> Novo treino</a>
     </div>
     <div th:unless="${#lists.isEmpty(treinos)}" class="row g-3">
         <div th:each="t : ${treinos}" class="col-12 col-md-4 col-lg-3">
