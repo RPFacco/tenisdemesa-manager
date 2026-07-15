@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -35,7 +36,7 @@ class EstatisticaServiceTest {
     private EstatisticaService service;
 
     @Test
-    void sequenciaAtual_3V1D_retorna3V() {
+    void resumoPeriodo_3V1D_retornaSequencia3VeTotais() {
         Partida v1 = partidaComResultado(ResultadoPartida.VITORIA, LocalDate.of(2026, 7, 7));
         Partida v2 = partidaComResultado(ResultadoPartida.VITORIA, LocalDate.of(2026, 7, 6));
         Partida v3 = partidaComResultado(ResultadoPartida.VITORIA, LocalDate.of(2026, 7, 5));
@@ -43,9 +44,12 @@ class EstatisticaServiceTest {
 
         when(partidaRepository.findAllByOrderByDataDesc()).thenReturn(new ArrayList<>(List.of(v1, v2, v3, d1)));
 
-        String sequencia = service.sequenciaAtual();
+        Map<String, Object> resumo = service.resumoPeriodo(null, null);
 
-        assertEquals("3V", sequencia);
+        assertEquals("3V", resumo.get("sequenciaAtual"));
+        assertEquals(3L, resumo.get("totalVitorias"));
+        assertEquals(1L, resumo.get("totalDerrotas"));
+        assertEquals("75%", resumo.get("taxaVitoria"));
     }
 
     private Partida partidaComResultado(ResultadoPartida resultado, LocalDate data) {

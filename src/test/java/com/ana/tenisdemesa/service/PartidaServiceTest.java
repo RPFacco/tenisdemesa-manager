@@ -39,4 +39,33 @@ class PartidaServiceTest {
 
         assertDoesNotThrow(() -> service.validarSets(partida));
     }
+
+    @Test
+    void validarPlacar_simples3x1_ok() {
+        Partida partida = new Partida();
+        partida.setSetsAtleta(3);
+        partida.setSetsAdversario(1);
+
+        assertDoesNotThrow(() -> service.validarPlacar(partida));
+        assertTrue(partida.isVitoria());
+        assertEquals("3-1", partida.getPlacar());
+    }
+
+    @Test
+    void validarPlacar_simplesEmpatado_lancaExcecao() {
+        Partida partida = new Partida();
+        partida.setSetsAtleta(2);
+        partida.setSetsAdversario(2);
+
+        IllegalArgumentException ex = assertThrows(IllegalArgumentException.class,
+                () -> service.validarPlacar(partida));
+        assertTrue(ex.getMessage().contains("empatada"));
+    }
+
+    @Test
+    void validarPlacar_simplesSemValores_lancaExcecao() {
+        Partida partida = new Partida();
+
+        assertThrows(IllegalArgumentException.class, () -> service.validarPlacar(partida));
+    }
 }
